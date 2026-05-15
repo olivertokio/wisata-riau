@@ -19,6 +19,9 @@ const categoryKeywords = {
 }
 
 const placeholderLibrary = {
+  // Ganti daftar gambar tambahan CircularGallery di bawah ini.
+  // Disarankan pakai file lokal dari folder: public/images/gallery/
+  // Contoh path lokal: '/images/gallery/riau-1.jpg'
   'alam riau': [
     'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1600&q=80',
     'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1600&q=80',
@@ -52,18 +55,23 @@ const galleryItems = computed(() => {
 
   return [
     {
+      // Gambar utama CircularGallery item pertama mengambil image dari destinasi aktif.
+      // Kalau ingin ganti gambar utama per destinasi, edit field `image` di src/data/dummyData.js
       image: props.destination.image,
       text: props.destination.name,
     },
     {
+      // Gambar tambahan item kedua.
       image: placeholders[0],
       text: 'Lanskap Riau',
     },
     {
+      // Gambar tambahan item ketiga.
       image: placeholders[1],
       text: props.destination.category === 'Budaya' ? 'Budaya Melayu' : 'Pesona Riau',
     },
     {
+      // Gambar tambahan item keempat.
       image: placeholders[2],
       text: props.destination.category === 'Alam' ? 'Wisata Alam' : 'Travel Story',
     },
@@ -98,6 +106,7 @@ const galleryItems = computed(() => {
       <div class="relative mt-10 h-[520px] overflow-hidden rounded-[2rem] border border-white/10 bg-black/20 shadow-[0_26px_90px_rgba(0,0,0,0.22)] sm:h-[620px]">
         <div class="pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b from-black/28 to-transparent"></div>
         <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-black/32 to-transparent"></div>
+        <!-- Ganti item gambar CircularGallery lewat computed `galleryItems` di file ini. -->
         <CircularGallery
           :items="galleryItems"
           :bend="3"

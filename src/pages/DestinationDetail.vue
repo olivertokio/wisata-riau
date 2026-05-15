@@ -19,21 +19,26 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import DestinationGallery from '../components/detail/DestinationGallery.vue'
 import ReviewForm from '../components/forms/ReviewForm.vue'
-import { destinations, reviews } from '../data/dummyData'
+import { destinations } from '../data/dummyData'
+import { addReview, getReviewsByDestination } from '../services/reviewService'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
 const detailRoot = ref(null)
+const reviewItems = ref([])
+const reviewsLoading = ref(false)
+const reviewSubmitLoading = ref(false)
+const reviewError = ref('')
+const reviewSuccess = ref('')
+const reviewResetToken = ref(0)
 let ctx
 
 const destination = computed(() => {
   return destinations.find((item) => String(item.id) === String(route.params.id))
 })
 
-const destinationReviews = computed(() => {
-  return reviews.filter((review) => String(review.destinationId) === String(route.params.id))
-})
+const destinationReviews = computed(() => reviewItems.value)
 
 const hasCoordinates = computed(() => {
   return destination.value?.latitude != null && destination.value?.longitude != null
@@ -132,6 +137,57 @@ function getReviewInitial(name) {
   return (name || '?').trim().charAt(0).toUpperCase()
 }
 
+function reviewTimestamp() {
+  return 'Baru saja'
+}
+
+async function fetchReviews() {
+  if (!destination.value) {
+    reviewItems.value = []
+    return
+  }
+
+  reviewsLoading.value = true
+  reviewError.value = ''
+
+  try {
+    const data = await getReviewsByDestination(route.params.id)
+    reviewItems.value = [...data].reverse()
+  } catch (error) {
+    reviewError.value = error?.response?.data?.message || 'Ulasan belum bisa dimuat saat ini. Coba beberapa saat lagi.'
+    reviewItems.value = []
+  } finally {
+    reviewsLoading.value = false
+  }
+}
+
+async function handleReviewSubmit(payload) {
+  if (!destination.value) {
+    return
+  }
+
+  reviewSubmitLoading.value = true
+  reviewError.value = ''
+  reviewSuccess.value = ''
+
+  try {
+    const createdReview = await addReview({
+      destinationId: Number(route.params.id),
+      name: payload.name,
+      rating: payload.rating,
+      comment: payload.comment,
+    })
+
+    reviewItems.value = [createdReview, ...reviewItems.value]
+    reviewResetToken.value += 1
+    reviewSuccess.value = 'Ulasan berhasil dikirim dan langsung tampil di halaman destinasi.'
+  } catch (error) {
+    reviewError.value = error?.response?.data?.message || 'Gagal mengirim ulasan. Pastikan JSON Server aktif lalu coba lagi.'
+  } finally {
+    reviewSubmitLoading.value = false
+  }
+}
+
 function shareDestination() {
   if (!destination.value) {
     return
@@ -217,6 +273,7 @@ function animatePage() {
 }
 
 onMounted(async () => {
+  await fetchReviews()
   await nextTick()
   animatePage()
 })
@@ -224,6 +281,8 @@ onMounted(async () => {
 watch(
   () => route.params.id,
   async () => {
+    reviewSuccess.value = ''
+    await fetchReviews()
     await nextTick()
     animatePage()
   },
@@ -512,7 +571,47 @@ onBeforeUnmount(() => {
           <p class="mt-3 max-w-xl leading-7 text-muted-gray">
             Ceritakan pengalaman, suasana, dan kesan yang kamu rasakan agar wisatawan lain bisa merencanakan kunjungan dengan lebih baik.
           </p>
-          <ReviewForm class="mt-8" />
+
+          <Transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="translate-y-2 opacity-0"
+            enter-to-class="translate-y-0 opacity-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="translate-y-0 opacity-100"
+            leave-to-class="-translate-y-2 opacity-0"
+          >
+            <div
+              v-if="reviewSuccess"
+              class="mt-6 rounded-[1.5rem] border border-nature-green/15 bg-[linear-gradient(135deg,rgba(47,107,79,0.08),rgba(201,162,39,0.08))] p-4"
+            >
+              <p class="font-semibold text-nature-green">Ulasan berhasil ditambahkan</p>
+              <p class="mt-2 text-sm leading-7 text-muted-gray">{{ reviewSuccess }}</p>
+            </div>
+          </Transition>
+
+          <Transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="translate-y-2 opacity-0"
+            enter-to-class="translate-y-0 opacity-100"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="translate-y-0 opacity-100"
+            leave-to-class="-translate-y-2 opacity-0"
+          >
+            <div
+              v-if="reviewError"
+              class="mt-6 rounded-[1.5rem] border border-[#f59e0b]/20 bg-[#fff8eb] p-4"
+            >
+              <p class="font-semibold text-[#b45309]">Terjadi kendala pada sistem review</p>
+              <p class="mt-2 text-sm leading-7 text-muted-gray">{{ reviewError }}</p>
+            </div>
+          </Transition>
+
+          <ReviewForm
+            class="mt-8"
+            :loading="reviewSubmitLoading"
+            :reset-token="reviewResetToken"
+            @submit="handleReviewSubmit"
+          />
         </div>
 
         <div
@@ -532,7 +631,17 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <div class="mt-8 space-y-4">
+          <div v-if="reviewsLoading" class="mt-8 inline-flex items-center gap-2 rounded-full border border-black/8 bg-soft-cream px-4 py-2 text-sm font-medium text-muted-gray">
+            <Send class="size-4 animate-pulse text-nature-green" />
+            Memuat ulasan terbaru...
+          </div>
+
+          <TransitionGroup
+            v-else
+            name="review-fade"
+            tag="div"
+            class="mt-8 space-y-4"
+          >
             <article
               v-for="review in destinationReviews"
               :key="review.id"
@@ -557,17 +666,20 @@ onBeforeUnmount(() => {
                         />
                       </div>
                     </div>
-                    <span class="text-sm font-semibold text-muted-gray">{{ review.rating }}/5</span>
+                    <span class="text-right text-sm font-semibold text-muted-gray">
+                      <span class="block">{{ review.rating }}/5</span>
+                      <span class="mt-1 block text-xs font-medium text-muted-gray/80">{{ reviewTimestamp() }}</span>
+                    </span>
                   </div>
 
                   <p class="mt-4 leading-7 text-muted-gray">{{ review.comment }}</p>
                 </div>
               </div>
             </article>
-          </div>
+          </TransitionGroup>
 
           <div
-            v-if="destinationReviews.length === 0"
+            v-if="!reviewsLoading && destinationReviews.length === 0"
             class="mt-8 rounded-[1.6rem] border border-dashed border-black/10 bg-soft-cream/65 p-6 text-center"
           >
             <p class="font-semibold text-deep-charcoal">Belum ada ulasan untuk destinasi ini.</p>
@@ -653,3 +765,16 @@ onBeforeUnmount(() => {
     </div>
   </section>
 </template>
+
+<style scoped>
+.review-fade-enter-active,
+.review-fade-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.review-fade-enter-from,
+.review-fade-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}
+</style>

@@ -5,13 +5,7 @@ export async function getDestinations() {
   return response.data
 }
 
-export async function getDestinationById(id) {
-  const response = await api.get(`/destinations/${id}`)
-  return response.data
-}
-
-export async function createDestination(payload) {
+export async function addDestination(payload) {
   const response = await api.post('/destinations', payload)
   return response.data
 }
-

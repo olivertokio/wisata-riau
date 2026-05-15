@@ -1,0 +1,43 @@
+{
+  "destinations": [
+    {
+      "id": "1",
+      "name": "Istana Siak Sri Indrapura",
+      "category": "Budaya",
+      "location": "Siak",
+      "image": "/images/wisata/siak.jpg",
+      "description": "Istana peninggalan Kesultanan Siak.",
+      "rating": 4.9,
+      "latitude": 0.799,
+      "longitude": 102.043
+    },
+    {
+      "name": "benteng belanda siak",
+      "category": "sejarah",
+      "location": "siak sri indrapura",
+      "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH1B0sX4ULLY9X7qDF5KNNseXH4iUXj1dRbA&s",
+      "description": "bagus",
+      "rating": 5,
+      "latitude": 9,
+      "longitude": 2000,
+      "id": "8GWH9KZDGag"
+    }
+  ],
+  "reviews": [
+    {
+      "destinationId": 2,
+      "name": "oliver",
+      "rating": 5,
+      "comment": "sangat rekomendasi",
+      "id": "NWZerVJ_qk0"
+    },
+    {
+      "destinationId": 2,
+      "name": "shandi",
+      "rating": 5,
+      "comment": "sangat direkomendasikan untuk pencinta sejarah",
+      "id": "EApjp08IeEQ"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
