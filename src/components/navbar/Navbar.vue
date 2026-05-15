@@ -15,7 +15,7 @@ let observer
 const navItems = [
   { label: 'Home', to: '/' },
   { label: 'Explore', to: '/explore' },
-  { label: 'Tambah', to: '/add-destination' },
+  { label: 'Rencana Perjalanan', to: '/trip-planner' },
   { label: 'Profil', to: '/profile' },
 ]
 
@@ -34,10 +34,10 @@ watch(
 
 onMounted(() => {
   gsap.from(navRoot.value, {
-    y: -28,
+    y: -18,
     opacity: 0,
-    duration: 0.9,
-    delay: 0.15,
+    duration: 0.75,
+    delay: 0.1,
     ease: 'power3.out',
   })
 
@@ -57,52 +57,44 @@ onBeforeUnmount(() => {
 <template>
   <header
     ref="navRoot"
-    class="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-5"
+    class="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[#F7F5F1]/88 backdrop-blur-md"
   >
-    <div
-      class="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-full border border-white/45 bg-white/40 px-3 py-2 shadow-[0_18px_50px_rgba(31,41,51,0.06)] ring-1 ring-black/5 backdrop-blur-xl sm:px-4"
-    >
-      <RouterLink to="/" class="group flex min-w-0 items-center gap-3 rounded-full pr-2" aria-label="Eksplorasi Wisata Riau">
-        <div
-          class="grid size-11 shrink-0 place-items-center rounded-full bg-deep-charcoal text-sm font-semibold text-white shadow-xl shadow-green-950/15 transition duration-300 group-hover:scale-105 group-hover:bg-nature-green"
-        >
-          EWR
+    <div class="mx-auto flex h-[5.95rem] w-full max-w-[1600px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-12">
+      <RouterLink to="/" class="flex min-w-0 items-center gap-3 rounded-full pr-2" aria-label="Eksplorasi Riau">
+        <div class="relative grid size-12 shrink-0 place-items-center">
+          <span class="absolute left-1/2 top-1/2 h-5 w-3.5 -translate-x-[90%] -translate-y-1/2 rounded-b-[999px] rounded-t-[999px] bg-[#173626]"></span>
+          <span class="absolute left-1/2 top-1/2 h-5 w-3.5 translate-x-[-5%] -translate-y-1/2 rounded-b-[999px] rounded-t-[999px] bg-[#173626]"></span>
         </div>
 
-        <div class="hidden leading-tight sm:block">
-          <p class="text-[0.68rem] font-semibold uppercase text-soft-gold">
-            Premium Travel
-          </p>
-          <p class="font-serif text-lg font-semibold text-deep-charcoal">
-            Eksplorasi Riau
-          </p>
+        <div class="min-w-0">
+          <p class="truncate text-[1.95rem] font-semibold tracking-[-0.03em] text-deep-charcoal">Eksplorasi Riau</p>
         </div>
       </RouterLink>
 
       <nav
-        class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-white/30 bg-white/25 p-1 text-sm font-medium text-muted-gray shadow-inner shadow-white/30 backdrop-blur-xl lg:flex"
+        class="hidden items-center gap-10 text-[1.1rem] font-medium text-deep-charcoal/88 lg:flex"
         aria-label="Navigasi utama"
       >
         <RouterLink
           v-for="item in navItems"
           :key="item.to"
-          class="rounded-full px-4 py-2.5 transition duration-300 hover:bg-white hover:text-deep-charcoal hover:shadow-sm [&.router-link-active]:bg-deep-charcoal [&.router-link-active]:text-white [&.router-link-active]:shadow-lg [&.router-link-active]:shadow-green-950/10"
+          class="relative py-2 transition duration-300 hover:text-[#173626] [&.router-link-active]:text-[#173626]"
           :to="item.to"
         >
           {{ item.label }}
         </RouterLink>
       </nav>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-3">
         <RouterLink
           to="/explore"
-          class="hidden rounded-full bg-nature-green/90 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-900/10 transition duration-300 hover:-translate-y-0.5 hover:bg-deep-charcoal md:inline-flex"
+          class="hidden rounded-[0.9rem] bg-[#31553D] px-7 py-4 text-lg font-semibold text-white shadow-[0_10px_24px_rgba(23,54,38,0.16)] transition duration-300 hover:bg-[#173626] lg:inline-flex"
         >
           Jelajahi Sekarang
         </RouterLink>
 
         <button
-          class="inline-grid size-11 place-items-center rounded-full bg-white/45 text-deep-charcoal backdrop-blur-xl transition hover:bg-deep-charcoal hover:text-white lg:hidden"
+          class="inline-grid size-11 place-items-center rounded-full border border-black/10 bg-white/75 text-deep-charcoal transition hover:bg-[#173626] hover:text-white lg:hidden"
           type="button"
           :aria-expanded="isOpen"
           aria-controls="mobile-navigation"
@@ -126,22 +118,22 @@ onBeforeUnmount(() => {
       <div
         v-if="isOpen"
         id="mobile-navigation"
-        class="mx-auto mt-3 max-w-7xl rounded-[1.75rem] border border-white/45 bg-white/55 p-3 shadow-xl shadow-green-950/8 ring-1 ring-black/5 backdrop-blur-xl lg:hidden"
+        class="border-t border-black/8 bg-[#F7F5F1]/90 px-5 py-4 shadow-[0_20px_35px_rgba(31,41,51,0.05)] backdrop-blur-md lg:hidden sm:px-8"
       >
-        <nav class="grid gap-1 text-sm font-semibold text-muted-gray" aria-label="Navigasi mobile">
+        <nav class="grid gap-1 text-base font-semibold text-deep-charcoal/82" aria-label="Navigasi mobile">
           <RouterLink
             v-for="item in navItems"
             :key="item.to"
-            class="rounded-2xl px-4 py-3 transition hover:bg-soft-cream hover:text-deep-charcoal [&.router-link-active]:bg-nature-green [&.router-link-active]:text-white"
+            class="rounded-2xl px-4 py-3 transition hover:bg-white hover:text-[#173626] [&.router-link-active]:bg-[#173626] [&.router-link-active]:text-white"
             :to="item.to"
           >
             {{ item.label }}
           </RouterLink>
           <RouterLink
-            class="mt-2 rounded-2xl bg-deep-charcoal px-4 py-3 text-center text-white transition hover:bg-nature-green"
-            to="/login"
+            class="mt-2 rounded-2xl bg-[#31553D] px-4 py-3 text-center text-white transition hover:bg-[#173626]"
+            to="/explore"
           >
-            Login
+            Jelajahi Sekarang
           </RouterLink>
         </nav>
       </div>

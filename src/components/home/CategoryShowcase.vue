@@ -44,20 +44,20 @@ onBeforeUnmount(() => {
     class="relative isolate overflow-hidden bg-deep-charcoal px-4 py-20 text-white sm:px-6 lg:px-10 lg:py-28"
     aria-labelledby="category-showcase-title"
   >
-    <!-- Base atmosphere: edit these gradients to tune the overall dark cinematic mood. -->
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_4%,rgba(201,162,39,0.15),transparent_30%),radial-gradient(circle_at_82%_10%,rgba(47,107,79,0.22),transparent_34%),linear-gradient(180deg,#24332A_0%,#1F2933_42%,#17211D_100%)]"></div>
+    <!-- Base atmosphere: soft cinematic multi-layer blend without hard dividers. -->
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_16%_6%,rgba(201,162,39,0.11),transparent_28%),radial-gradient(circle_at_82%_12%,rgba(47,107,79,0.16),transparent_32%),radial-gradient(circle_at_52%_34%,rgba(255,255,255,0.04),transparent_24%),linear-gradient(180deg,#28352D_0%,#212D27_34%,#1C2622_66%,#18211E_100%)]"></div>
 
-    <!-- Hero-to-section blend: soft cream fog that removes the hard line from the white hero area. -->
-    <div class="pointer-events-none absolute inset-x-0 -top-10 h-64 bg-[linear-gradient(180deg,rgba(253,252,248,0.96)_0%,rgba(247,243,234,0.68)_22%,rgba(247,243,234,0.22)_48%,rgba(31,41,51,0)_100%)] blur-xl"></div>
+    <!-- Top atmospheric fade: blends naturally from the lighter section above. -->
+    <div class="pointer-events-none absolute inset-x-0 -top-14 h-72 bg-[linear-gradient(180deg,rgba(253,252,248,0.94)_0%,rgba(247,243,234,0.62)_20%,rgba(247,243,234,0.18)_42%,rgba(24,33,30,0)_100%)] blur-2xl"></div>
 
-    <!-- Thin atmospheric glow: adds depth without looking like a black shadow strip. -->
-    <div class="pointer-events-none absolute inset-x-6 top-10 h-36 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(201,162,39,0.14)_0%,rgba(47,107,79,0.12)_42%,transparent_72%)] blur-3xl"></div>
+    <!-- Ambient glow: soft foggy light instead of a dark horizontal overlay strip. -->
+    <div class="pointer-events-none absolute inset-x-10 top-6 h-40 rounded-full bg-[radial-gradient(ellipse_at_center,rgba(201,162,39,0.10)_0%,rgba(47,107,79,0.10)_40%,rgba(255,255,255,0.03)_58%,transparent_76%)] blur-3xl"></div>
 
-    <!-- Readability veil: keeps the white title readable after the soft top fade. -->
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[linear-gradient(180deg,rgba(31,41,51,0)_0%,rgba(31,41,51,0.24)_46%,rgba(31,41,51,0.58)_100%)]"></div>
+    <!-- Soft tonal veil: keeps depth and readability without introducing hard lines. -->
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_18%,rgba(255,255,255,0.05),transparent_24%),linear-gradient(180deg,rgba(20,29,25,0.08)_0%,rgba(20,29,25,0.16)_36%,rgba(20,29,25,0.26)_72%,rgba(20,29,25,0.34)_100%)]"></div>
 
-    <!-- Masked transition wash: adjust height/opacity if the hero-to-dark fade needs more or less softness. -->
-    <div class="pointer-events-none absolute inset-x-0 top-0 h-72 bg-premium-white/18 backdrop-blur-sm [mask-image:linear-gradient(180deg,black_0%,rgba(0,0,0,0.58)_34%,transparent_100%)]"></div>
+    <!-- Bottom fade: smooth exit so the section blends elegantly into the next block. -->
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(180deg,rgba(24,33,30,0)_0%,rgba(24,33,30,0.18)_42%,rgba(24,33,30,0.34)_100%)] blur-xl"></div>
 
     <div class="relative mx-auto max-w-7xl">
       <div class="grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">

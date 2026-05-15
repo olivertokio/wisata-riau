@@ -1,6 +1,22 @@
 export const popularDestinations = [
   {
     id: 4,
+    title: 'Jembatan Siak Sri Indrapura',
+    name: 'Istana Siak Sri Indrapura',
+    location: 'Kabupaten Siak',
+    category: 'Budaya',
+    rating: 4.8,
+    reviewCount: 113,
+    // Ganti video Siak di sini. File aktif sekarang: public/videos/siak.mp4
+    video: '/videos/siak1.mp4',
+    // Ganti thumbnail/foto preview Siak di sini jika nanti sudah punya aset lokal baru.
+    thumbnail: '/images/wisata/istana-siak.jpg',
+    image: '/images/wisata/istana-siak.jpg',
+    fallbackImage: 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1800&q=80',
+    description: 'Peninggalan Kesultanan Siak dengan arsitektur megah, halaman lapang, dan koleksi sejarah Melayu.',
+  },
+  {
+    id: 5,
     title: 'Istana Siak Sri Indrapura',
     name: 'Istana Siak Sri Indrapura',
     location: 'Kabupaten Siak',

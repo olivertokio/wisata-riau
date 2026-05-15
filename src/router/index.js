@@ -17,9 +17,9 @@ const routes = [
     component: () => import('../pages/DestinationDetail.vue'),
   },
   {
-    path: '/add-destination',
-    name: 'add-destination',
-    component: () => import('../pages/AddDestination.vue'),
+    path: '/trip-planner',
+    name: 'trip-planner',
+    component: () => import('../pages/TripPlanner.vue'),
   },
   {
     path: '/login',

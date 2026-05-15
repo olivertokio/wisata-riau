@@ -10,7 +10,7 @@ let revealContext
 const quickLinks = [
   { label: 'Home', to: '/' },
   { label: 'Explore', to: '/explore' },
-  { label: 'Tambah Destinasi', to: '/add-destination' },
+  { label: 'Rencana Perjalanan', to: '/trip-planner' },
   { label: 'Profil', to: '/profile' },
 ]
 
@@ -112,7 +112,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="footer-reveal flex flex-col gap-3 py-6 text-sm text-white/45 sm:flex-row sm:items-center sm:justify-between">
-        <p>© 2026 Eksplorasi Riau. All rights reserved.</p>
+        <p>&copy; 2026 Eksplorasi Riau. All rights reserved.</p>
         <p>Provinsi Riau, Indonesia</p>
       </div>
     </div>

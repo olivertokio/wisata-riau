@@ -37,6 +37,13 @@
       "rating": 5,
       "comment": "sangat direkomendasikan untuk pencinta sejarah",
       "id": "EApjp08IeEQ"
+    },
+    {
+      "destinationId": 4,
+      "name": "bryan",
+      "rating": 5,
+      "comment": "sangat sangat rekomendasi buat yang suka sejarah kerajaan",
+      "id": "5MP3ai6GUIc"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

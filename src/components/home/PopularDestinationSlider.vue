@@ -1,5 +1,5 @@
 <script setup>
-import { ArrowLeft, ArrowRight, MapPin, Play, Star } from 'lucide-vue-next'
+import { ArrowLeft, ArrowRight, MapPin, Play, Star, Volume2, VolumeX } from 'lucide-vue-next'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -13,8 +13,10 @@ const progressBar = ref(null)
 const activeIndex = ref(0)
 const isAnimating = ref(false)
 const videoFailed = ref(false)
+const isMuted = ref(true)
 
-const slideDuration = 6000
+const slideDuration = 15000
+const defaultVolume = 0.3
 let autoPlayTimer = null
 let ctx = null
 let progressTween = null
@@ -130,11 +132,32 @@ function handleImageError(event, destination) {
   }
 }
 
+function syncVideoAudio() {
+  if (!videoRef.value) {
+    return
+  }
+
+  videoRef.value.volume = defaultVolume
+  videoRef.value.muted = isMuted.value
+}
+
+function toggleSound() {
+  if (!videoRef.value) {
+    return
+  }
+
+  isMuted.value = !isMuted.value
+  syncVideoAudio()
+  videoRef.value.play?.().catch(() => {})
+}
+
 watch(activeIndex, async () => {
   await nextTick()
 
   if (videoRef.value) {
+    syncVideoAudio()
     videoRef.value.load()
+    syncVideoAudio()
     videoRef.value.play?.().catch(() => {})
   }
 
@@ -157,6 +180,8 @@ watch(activeIndex, async () => {
 })
 
 onMounted(() => {
+  syncVideoAudio()
+
   ctx = gsap.context(() => {
     gsap.from('.destination-shell', {
       y: 80,
@@ -213,6 +238,7 @@ onBeforeUnmount(() => {
         playsinline
         preload="metadata"
         :poster="activeDestination.thumbnail"
+        :muted="isMuted"
         @error="handleVideoError"
       >
         <source :src="activeDestination.video" type="video/mp4" @error="handleVideoError" />
@@ -294,7 +320,29 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <div class="absolute bottom-10 right-5 z-20 flex items-center gap-2 sm:hidden">
+        <button
+          v-if="!videoFailed"
+          class="absolute bottom-12 right-5 z-20 inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/12 px-4 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-deep-charcoal sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-12"
+          type="button"
+          :aria-label="isMuted ? 'Aktifkan suara video' : 'Matikan suara video'"
+          @click="toggleSound"
+        >
+          <Transition
+            enter-active-class="transition duration-200 ease-out"
+            enter-from-class="scale-75 opacity-0"
+            enter-to-class="scale-100 opacity-100"
+            leave-active-class="transition duration-150 ease-in"
+            leave-from-class="scale-100 opacity-100"
+            leave-to-class="scale-75 opacity-0"
+            mode="out-in"
+          >
+            <VolumeX v-if="isMuted" key="muted" class="size-4.5" />
+            <Volume2 v-else key="unmuted" class="size-4.5" />
+          </Transition>
+          <span>{{ isMuted ? 'Muted' : 'Audio On' }}</span>
+        </button>
+
+        <div class="absolute bottom-10 left-5 z-20 flex items-center gap-2 sm:hidden">
           <button
             class="grid size-11 place-items-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur-xl"
             type="button"
