@@ -1,14 +1,25 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { SearchX } from 'lucide-vue-next'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import DestinationDirectoryCard from '../components/explore/DestinationDirectoryCard.vue'
+import ExploreFilterBar from '../components/explore/ExploreFilterBar.vue'
+import ExploreHero from '../components/explore/ExploreHero.vue'
+import FeaturedRecommendation from '../components/explore/FeaturedRecommendation.vue'
 import { destinations } from '../data/dummyData'
+import { animateExploreCards, createExploreReveal } from '../gsap/exploreReveal'
 
 const route = useRoute()
+const exploreRoot = ref(null)
 const query = ref('')
 const selectedCategory = ref(route.query.category || 'Semua')
 const selectedLocation = ref('Semua')
 
-const categories = computed(() => ['Semua', ...new Set(destinations.map((destination) => destination.category))])
+const categoryQuickChips = ['Semua', 'Alam', 'Budaya', 'Bahari', 'Kuliner', 'Sejarah']
+let revealContext
+let cardsTween
+
+const categories = computed(() => ['Semua', ...new Set([...categoryQuickChips.slice(1), ...destinations.map((destination) => destination.category)])])
 const locations = computed(() => ['Semua', ...new Set(destinations.map((destination) => destination.location))])
 
 const filteredDestinations = computed(() => {
@@ -25,74 +36,148 @@ const filteredDestinations = computed(() => {
     return matchesKeyword && matchesCategory && matchesLocation
   })
 })
+
+const sortedDestinations = computed(() => {
+  return [...destinations].sort((left, right) => {
+    if (right.rating !== left.rating) {
+      return right.rating - left.rating
+    }
+
+    return left.name.localeCompare(right.name)
+  })
+})
+
+const featuredDestination = computed(() => sortedDestinations.value[0] || null)
+const supportingRecommendations = computed(() => sortedDestinations.value.slice(1, 4))
+
+const averageRating = computed(() => {
+  const total = destinations.reduce((sum, destination) => sum + destination.rating, 0)
+  return destinations.length ? (total / destinations.length).toFixed(1) : '0.0'
+})
+
+const heroStats = computed(() => ({
+  totalDestinations: destinations.length,
+  totalCategories: categories.value.length - 1,
+  averageRating: averageRating.value,
+}))
+
+function resetFilters() {
+  query.value = ''
+  selectedCategory.value = 'Semua'
+  selectedLocation.value = 'Semua'
+}
+
+function animateCards() {
+  cardsTween?.kill?.()
+  cardsTween = animateExploreCards(exploreRoot.value)
+}
+
+onMounted(async () => {
+  revealContext = createExploreReveal(exploreRoot.value)
+  await nextTick()
+  animateCards()
+})
+
+watch(filteredDestinations, async () => {
+  await nextTick()
+  animateCards()
+})
+
+onBeforeUnmount(() => {
+  cardsTween?.kill?.()
+  revealContext?.revert?.()
+})
 </script>
 
 <template>
-  <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-10">
-    <header class="rounded-[2rem] bg-deep-charcoal px-6 py-10 text-white shadow-2xl shadow-green-950/10 sm:px-10">
-      <p class="font-semibold text-soft-gold">Direktori destinasi</p>
-      <div class="mt-3 grid gap-6 lg:grid-cols-[1fr_28rem] lg:items-end">
-        <div>
-          <h1 class="text-4xl font-semibold sm:text-5xl">Explore Wisata Riau</h1>
-          <p class="mt-4 max-w-2xl leading-8 text-white/70">
-            Cari destinasi berdasarkan keyword, kategori, dan wilayah seperti Pekanbaru, Siak, Kampar, Dumai, atau pesisir Riau.
-          </p>
-        </div>
+  <section
+    ref="exploreRoot"
+    class="relative overflow-hidden bg-[linear-gradient(180deg,#FDFCF8_0%,#F9F6EF_24%,#FDFCF8_100%)] pb-20"
+  >
+    <div class="pointer-events-none absolute inset-x-0 top-0 h-[28rem] bg-[radial-gradient(circle_at_top_right,rgba(201,162,39,0.14),transparent_32%),radial-gradient(circle_at_top_left,rgba(47,107,79,0.14),transparent_30%)]"></div>
 
-        <div class="rounded-3xl bg-white/10 p-3 backdrop-blur">
-          <input
-            v-model="query"
-            class="w-full rounded-2xl border border-white/10 bg-white px-5 py-4 text-deep-charcoal outline-none transition placeholder:text-muted-gray focus:ring-4 focus:ring-soft-gold/25"
-            type="search"
-            placeholder="Cari pantai, kuliner, air terjun..."
-          />
-        </div>
-      </div>
-    </header>
+    <ExploreHero
+      :hero-image="featuredDestination?.image"
+      :query="query"
+      :stats="heroStats"
+      @update:query="query = $event"
+    />
 
-    <div class="mt-6 grid gap-3 rounded-3xl border border-black/5 bg-white p-3 shadow-sm md:grid-cols-2">
-      <label class="block">
-        <span class="mb-2 block px-2 text-sm font-semibold text-muted-gray">Kategori</span>
-        <select v-model="selectedCategory" class="w-full rounded-2xl border border-black/10 bg-soft-cream px-4 py-3 outline-none focus:ring-4 focus:ring-soft-gold/20">
-          <option v-for="category in categories" :key="category" :value="category">{{ category }}</option>
-        </select>
-      </label>
+    <ExploreFilterBar
+      :categories="categories"
+      :locations="locations"
+      :quick-chips="categoryQuickChips"
+      :results-count="filteredDestinations.length"
+      :selected-category="selectedCategory"
+      :selected-location="selectedLocation"
+      @reset="resetFilters"
+      @update:selected-category="selectedCategory = $event"
+      @update:selected-location="selectedLocation = $event"
+    />
 
-      <label class="block">
-        <span class="mb-2 block px-2 text-sm font-semibold text-muted-gray">Lokasi</span>
-        <select v-model="selectedLocation" class="w-full rounded-2xl border border-black/10 bg-soft-cream px-4 py-3 outline-none focus:ring-4 focus:ring-soft-gold/20">
-          <option v-for="location in locations" :key="location" :value="location">{{ location }}</option>
-        </select>
-      </label>
-    </div>
+    <div class="mx-auto mt-10 max-w-7xl px-4 sm:px-6 lg:px-10">
+      <div class="grid gap-8 xl:grid-cols-[minmax(0,1fr)_21rem] xl:items-start">
+        <div class="order-2 xl:order-1">
+          <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div data-explore-section>
+              <p class="text-sm font-semibold uppercase tracking-[0.22em] text-soft-gold">Pilihan Destinasi</p>
+              <h2 class="mt-3 font-serif text-3xl font-semibold leading-tight text-deep-charcoal sm:text-4xl">
+                Jelajahi lanskap alam, budaya, dan cerita khas Riau.
+              </h2>
+            </div>
 
-    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      <RouterLink
-        v-for="destination in filteredDestinations"
-        :key="destination.id"
-        class="group overflow-hidden rounded-3xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-2xl hover:shadow-green-950/10"
-        :to="`/destination/${destination.id}`"
-      >
-        <div class="relative">
-          <img class="h-60 w-full object-cover transition duration-500 group-hover:scale-105" :src="destination.image" :alt="destination.name" />
-          <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-sm font-semibold text-nature-green backdrop-blur">
-            {{ destination.category }}
-          </span>
-        </div>
-        <div class="p-5">
-          <div class="flex items-center justify-between gap-4">
-            <strong class="text-xl">{{ destination.name }}</strong>
-            <span class="rounded-full bg-soft-cream px-3 py-1 font-semibold text-soft-gold">{{ destination.rating }}</span>
+            <div data-explore-section class="rounded-full border border-black/5 bg-white/80 px-4 py-2 text-sm font-medium text-muted-gray shadow-sm backdrop-blur">
+              {{ filteredDestinations.length }} hasil siap dijelajahi
+            </div>
           </div>
-          <span class="mt-2 block text-muted-gray">{{ destination.location }}</span>
-          <p class="mt-4 line-clamp-2 text-sm leading-6 text-muted-gray">{{ destination.description }}</p>
-        </div>
-      </RouterLink>
-    </div>
 
-    <div v-if="filteredDestinations.length === 0" class="mt-8 rounded-3xl border border-black/5 bg-white p-8 text-center shadow-sm">
-      <h2 class="text-2xl font-semibold">Destinasi tidak ditemukan</h2>
-      <p class="mt-2 text-muted-gray">Coba ubah kata kunci, kategori, atau lokasi pencarian.</p>
+          <div
+            v-if="filteredDestinations.length > 0"
+            class="mt-8 grid gap-6 md:grid-cols-2 xl:grid-cols-3"
+          >
+            <DestinationDirectoryCard
+              v-for="destination in filteredDestinations"
+              :key="destination.id"
+              :destination="destination"
+            />
+          </div>
+
+          <div
+            v-else
+            data-explore-section
+            class="mt-8 overflow-hidden rounded-[2rem] border border-white/80 bg-white/95 p-6 shadow-[0_28px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 backdrop-blur sm:p-8"
+          >
+            <div class="grid gap-6 md:grid-cols-[auto_1fr] md:items-center">
+              <div class="grid size-20 place-items-center rounded-[1.6rem] bg-soft-cream text-soft-gold shadow-inner shadow-white">
+                <SearchX class="size-9" />
+              </div>
+
+              <div>
+                <p class="text-sm font-semibold uppercase tracking-[0.22em] text-soft-gold">Belum Ada Hasil</p>
+                <h3 class="mt-3 font-serif text-3xl font-semibold text-deep-charcoal">
+                  Belum ada destinasi yang cocok dengan pencarianmu.
+                </h3>
+                <p class="mt-3 max-w-2xl leading-7 text-muted-gray">
+                  Coba ganti keyword, pilih kategori lain, atau reset filter untuk melihat kembali seluruh direktori wisata terbaik di Provinsi Riau.
+                </p>
+
+                <button
+                  class="mt-6 inline-flex items-center justify-center rounded-full bg-deep-charcoal px-5 py-3 text-sm font-semibold text-white transition duration-300 hover:-translate-y-0.5 hover:bg-nature-green"
+                  type="button"
+                  @click="resetFilters"
+                >
+                  Reset Pencarian
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <FeaturedRecommendation
+          :destinations="supportingRecommendations"
+          :featured-destination="featuredDestination"
+        />
+      </div>
     </div>
   </section>
 </template>

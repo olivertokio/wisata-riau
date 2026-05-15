@@ -60,7 +60,7 @@ onBeforeUnmount(() => {
     class="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-5 sm:pt-5"
   >
     <div
-      class="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-full border border-white/70 bg-white/70 px-3 py-2 shadow-[0_24px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 backdrop-blur-2xl sm:px-4"
+      class="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-full border border-white/45 bg-white/40 px-3 py-2 shadow-[0_18px_50px_rgba(31,41,51,0.06)] ring-1 ring-black/5 backdrop-blur-xl sm:px-4"
     >
       <RouterLink to="/" class="group flex min-w-0 items-center gap-3 rounded-full pr-2" aria-label="Eksplorasi Wisata Riau">
         <div
@@ -80,7 +80,7 @@ onBeforeUnmount(() => {
       </RouterLink>
 
       <nav
-        class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-black/5 bg-premium-white/70 p-1 text-sm font-medium text-muted-gray shadow-inner shadow-white/70 lg:flex"
+        class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 rounded-full border border-white/30 bg-white/25 p-1 text-sm font-medium text-muted-gray shadow-inner shadow-white/30 backdrop-blur-xl lg:flex"
         aria-label="Navigasi utama"
       >
         <RouterLink
@@ -96,13 +96,13 @@ onBeforeUnmount(() => {
       <div class="flex items-center gap-2">
         <RouterLink
           to="/explore"
-          class="hidden rounded-full bg-nature-green px-5 py-3 text-sm font-semibold text-white shadow-xl shadow-green-900/15 transition duration-300 hover:-translate-y-0.5 hover:bg-deep-charcoal md:inline-flex"
+          class="hidden rounded-full bg-nature-green/90 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-green-900/10 transition duration-300 hover:-translate-y-0.5 hover:bg-deep-charcoal md:inline-flex"
         >
           Jelajahi Sekarang
         </RouterLink>
 
         <button
-          class="inline-grid size-11 place-items-center rounded-full bg-soft-cream text-deep-charcoal transition hover:bg-deep-charcoal hover:text-white lg:hidden"
+          class="inline-grid size-11 place-items-center rounded-full bg-white/45 text-deep-charcoal backdrop-blur-xl transition hover:bg-deep-charcoal hover:text-white lg:hidden"
           type="button"
           :aria-expanded="isOpen"
           aria-controls="mobile-navigation"
@@ -126,7 +126,7 @@ onBeforeUnmount(() => {
       <div
         v-if="isOpen"
         id="mobile-navigation"
-        class="mx-auto mt-3 max-w-7xl rounded-[1.75rem] border border-white/70 bg-white/85 p-3 shadow-2xl shadow-green-950/10 ring-1 ring-black/5 backdrop-blur-2xl lg:hidden"
+        class="mx-auto mt-3 max-w-7xl rounded-[1.75rem] border border-white/45 bg-white/55 p-3 shadow-xl shadow-green-950/8 ring-1 ring-black/5 backdrop-blur-xl lg:hidden"
       >
         <nav class="grid gap-1 text-sm font-semibold text-muted-gray" aria-label="Navigasi mobile">
           <RouterLink

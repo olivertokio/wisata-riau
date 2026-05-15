@@ -171,19 +171,6 @@ onMounted(() => {
       },
     })
 
-    gsap.from('.destination-nav-item', {
-      y: 24,
-      opacity: 0,
-      duration: 0.75,
-      stagger: 0.055,
-      ease: 'power3.out',
-      scrollTrigger: {
-        trigger: sliderRoot.value,
-        start: 'top 68%',
-        once: true,
-      },
-    })
-
     ScrollTrigger.create({
       trigger: sliderRoot.value,
       start: 'top 75%',
@@ -272,8 +259,7 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <div class="grid gap-8 lg:grid-cols-[1fr_24rem] lg:items-end">
-          <div class="destination-copy max-w-4xl">
+        <div class="destination-copy max-w-4xl">
             <p class="mb-5 inline-flex items-center gap-2 rounded-full bg-soft-gold px-4 py-2 text-sm font-semibold text-deep-charcoal">
               {{ activeDestination.category }}
             </p>
@@ -300,36 +286,6 @@ onBeforeUnmount(() => {
                 {{ activeDestination.rating }} · {{ activeDestination.reviewCount }} ulasan
               </span>
             </div>
-          </div>
-
-          <div class="rounded-[1.75rem] border border-white/14 bg-white/10 p-3 backdrop-blur-2xl">
-            <div class="flex items-center justify-between px-2 pb-3">
-              <span class="text-xs font-semibold uppercase tracking-[0.18em] text-white/58">Destinasi</span>
-              <span class="font-serif text-2xl text-white">0{{ activeIndex + 1 }}</span>
-            </div>
-
-            <div class="grid gap-2">
-              <button
-                v-for="(destination, index) in popularDestinations"
-                :key="destination.title"
-                class="destination-nav-item group grid grid-cols-[4.5rem_1fr] items-center gap-3 rounded-[1.1rem] p-2 text-left transition duration-300"
-                :class="index === activeIndex ? 'bg-white text-deep-charcoal' : 'bg-white/8 text-white hover:bg-white/16'"
-                type="button"
-                @click="goToSlide(index)"
-              >
-                <img
-                  class="h-14 w-full rounded-xl object-cover"
-                  :src="destination.thumbnail"
-                  :alt="destination.title"
-                  @error="handleImageError($event, destination)"
-                />
-                <span class="min-w-0">
-                  <span class="block truncate text-sm font-semibold">{{ destination.title }}</span>
-                  <span class="mt-1 block truncate text-xs opacity-65">{{ destination.location }}</span>
-                </span>
-              </button>
-            </div>
-          </div>
         </div>
 
         <div class="absolute inset-x-5 bottom-4 z-20 sm:inset-x-8 lg:inset-x-12">
