@@ -1,0 +1,362 @@
+<script setup>
+import { ArrowLeft, ArrowRight, MapPin, Play, Star } from 'lucide-vue-next'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { popularDestinations } from '../../data/destinations'
+
+gsap.registerPlugin(ScrollTrigger)
+
+const sliderRoot = ref(null)
+const videoRef = ref(null)
+const progressBar = ref(null)
+const activeIndex = ref(0)
+const isAnimating = ref(false)
+const videoFailed = ref(false)
+
+const slideDuration = 6000
+let autoPlayTimer = null
+let ctx = null
+let progressTween = null
+let isSectionVisible = false
+
+const activeDestination = computed(() => popularDestinations[activeIndex.value])
+
+function destinationPath(destination) {
+  return [1, 2, 4].includes(destination.id)
+    ? `/destination/${destination.id}`
+    : `/explore?category=${destination.category}`
+}
+
+function shouldReduceMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+}
+
+function normalizeIndex(index) {
+  return (index + popularDestinations.length) % popularDestinations.length
+}
+
+function animateProgress() {
+  progressTween?.kill()
+
+  if (!progressBar.value) {
+    return
+  }
+
+  gsap.set(progressBar.value, { scaleX: 0 })
+
+  if (shouldReduceMotion() || !isSectionVisible) {
+    return
+  }
+
+  progressTween = gsap.to(progressBar.value, {
+    scaleX: 1,
+    duration: slideDuration / 1000,
+    ease: 'none',
+  })
+}
+
+function startAutoPlay() {
+  isSectionVisible = true
+  stopAutoPlay()
+  animateProgress()
+
+  autoPlayTimer = window.setInterval(() => {
+    nextSlide()
+  }, slideDuration)
+}
+
+function stopAutoPlay() {
+  if (autoPlayTimer) {
+    window.clearInterval(autoPlayTimer)
+    autoPlayTimer = null
+  }
+
+  progressTween?.kill()
+}
+
+function restartAutoPlayIfVisible() {
+  if (isSectionVisible) {
+    startAutoPlay()
+  }
+}
+
+async function goToSlide(index) {
+  const targetIndex = normalizeIndex(index)
+
+  if (isAnimating.value || targetIndex === activeIndex.value) {
+    return
+  }
+
+  isAnimating.value = true
+  stopAutoPlay()
+
+  if (!shouldReduceMotion()) {
+    await gsap.to(sliderRoot.value?.querySelectorAll('.destination-copy > *'), {
+      y: -18,
+      opacity: 0,
+      duration: 0.28,
+      stagger: 0.025,
+      ease: 'power2.in',
+    })
+
+    await gsap.to(sliderRoot.value?.querySelector('.destination-media-active'), {
+      scale: 1.04,
+      opacity: 0.72,
+      duration: 0.34,
+      ease: 'power2.inOut',
+    })
+  }
+
+  videoFailed.value = false
+  activeIndex.value = targetIndex
+}
+
+function nextSlide() {
+  goToSlide(activeIndex.value + 1)
+}
+
+function prevSlide() {
+  goToSlide(activeIndex.value - 1)
+}
+
+function handleVideoError() {
+  videoFailed.value = true
+}
+
+function handleImageError(event, destination) {
+  if (event.currentTarget.src !== destination.fallbackImage) {
+    event.currentTarget.src = destination.fallbackImage
+  }
+}
+
+watch(activeIndex, async () => {
+  await nextTick()
+
+  if (videoRef.value) {
+    videoRef.value.load()
+    videoRef.value.play?.().catch(() => {})
+  }
+
+  if (!shouldReduceMotion()) {
+    gsap.fromTo(
+      sliderRoot.value?.querySelector('.destination-media-active'),
+      { scale: 1.08, opacity: 0.7 },
+      { scale: 1, opacity: 1, duration: 0.78, ease: 'power3.out' },
+    )
+
+    await gsap.fromTo(
+      sliderRoot.value?.querySelectorAll('.destination-copy > *'),
+      { y: 26, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.62, stagger: 0.055, ease: 'power3.out' },
+    )
+  }
+
+  isAnimating.value = false
+  restartAutoPlayIfVisible()
+})
+
+onMounted(() => {
+  ctx = gsap.context(() => {
+    gsap.from('.destination-shell', {
+      y: 80,
+      opacity: 0,
+      scale: 0.97,
+      duration: 1,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: sliderRoot.value,
+        start: 'top 85%',
+        once: true,
+      },
+    })
+
+    gsap.from('.destination-nav-item', {
+      y: 24,
+      opacity: 0,
+      duration: 0.75,
+      stagger: 0.055,
+      ease: 'power3.out',
+      scrollTrigger: {
+        trigger: sliderRoot.value,
+        start: 'top 68%',
+        once: true,
+      },
+    })
+
+    ScrollTrigger.create({
+      trigger: sliderRoot.value,
+      start: 'top 75%',
+      end: 'bottom 20%',
+      onEnter: startAutoPlay,
+      onEnterBack: startAutoPlay,
+      onLeave: () => {
+        isSectionVisible = false
+        stopAutoPlay()
+      },
+      onLeaveBack: () => {
+        isSectionVisible = false
+        stopAutoPlay()
+      },
+    })
+  }, sliderRoot.value)
+})
+
+onBeforeUnmount(() => {
+  isSectionVisible = false
+  stopAutoPlay()
+  ctx?.revert()
+})
+</script>
+
+<template>
+  <section
+    ref="sliderRoot"
+    class="relative isolate overflow-hidden bg-premium-white py-16 lg:py-24"
+    aria-labelledby="popular-slider-title"
+  >
+    <div class="destination-shell relative mx-auto h-[46rem] max-w-[94rem] overflow-hidden bg-deep-charcoal shadow-[0_42px_120px_rgba(31,41,51,0.24)] ring-1 ring-black/5 sm:rounded-[2.5rem] lg:h-[50rem]">
+      <video
+        v-if="!videoFailed"
+        ref="videoRef"
+        class="destination-media-active absolute inset-0 h-full w-full object-cover"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        :poster="activeDestination.thumbnail"
+        @error="handleVideoError"
+      >
+        <source :src="activeDestination.video" type="video/mp4" @error="handleVideoError" />
+      </video>
+
+      <img
+        v-else
+        :key="activeDestination.fallbackImage"
+        class="destination-media-active absolute inset-0 h-full w-full object-cover"
+        :src="activeDestination.thumbnail"
+        :alt="activeDestination.title"
+        @error="handleImageError($event, activeDestination)"
+      />
+
+      <div class="destination-overlay absolute inset-0 bg-[linear-gradient(90deg,rgba(10,18,15,0.92)_0%,rgba(10,18,15,0.64)_42%,rgba(10,18,15,0.24)_72%,rgba(10,18,15,0.72)_100%)]"></div>
+      <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/75 to-transparent"></div>
+
+      <div class="relative z-10 flex h-full flex-col justify-between px-5 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-10">
+        <div class="flex items-center justify-between gap-4">
+          <div class="destination-copy">
+            <p class="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/12 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-soft-gold backdrop-blur-xl">
+              <Play class="size-3 fill-soft-gold" />
+              Pilihan wisatawan minggu ini
+            </p>
+          </div>
+
+          <div class="hidden items-center gap-2 sm:flex">
+            <button
+              class="grid size-12 place-items-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur-xl transition duration-300 hover:bg-white hover:text-deep-charcoal"
+              type="button"
+              aria-label="Destinasi sebelumnya"
+              @click="prevSlide"
+            >
+              <ArrowLeft class="size-5" />
+            </button>
+            <button
+              class="grid size-12 place-items-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur-xl transition duration-300 hover:bg-white hover:text-deep-charcoal"
+              type="button"
+              aria-label="Destinasi berikutnya"
+              @click="nextSlide"
+            >
+              <ArrowRight class="size-5" />
+            </button>
+          </div>
+        </div>
+
+        <div class="grid gap-8 lg:grid-cols-[1fr_24rem] lg:items-end">
+          <div class="destination-copy max-w-4xl">
+            <p class="mb-5 inline-flex items-center gap-2 rounded-full bg-soft-gold px-4 py-2 text-sm font-semibold text-deep-charcoal">
+              {{ activeDestination.category }}
+            </p>
+            <h2 id="popular-slider-title" class="font-serif text-5xl font-semibold leading-[0.98] text-white sm:text-7xl lg:text-8xl">
+              {{ activeDestination.title }}
+            </h2>
+            <p class="mt-6 flex items-center gap-2 text-base font-semibold text-white/78">
+              <MapPin class="size-5 text-soft-gold" />
+              {{ activeDestination.location }}
+            </p>
+            <p class="mt-5 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
+              {{ activeDestination.description }}
+            </p>
+            <div class="mt-7 flex flex-wrap items-center gap-3">
+              <RouterLink
+                class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-deep-charcoal transition duration-300 hover:-translate-y-0.5 hover:bg-soft-gold"
+                :to="destinationPath(activeDestination)"
+              >
+                Lihat detail
+                <ArrowRight class="size-4" />
+              </RouterLink>
+              <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-4 py-3 text-sm font-semibold text-white backdrop-blur-xl">
+                <Star class="size-4 fill-soft-gold text-soft-gold" />
+                {{ activeDestination.rating }} · {{ activeDestination.reviewCount }} ulasan
+              </span>
+            </div>
+          </div>
+
+          <div class="rounded-[1.75rem] border border-white/14 bg-white/10 p-3 backdrop-blur-2xl">
+            <div class="flex items-center justify-between px-2 pb-3">
+              <span class="text-xs font-semibold uppercase tracking-[0.18em] text-white/58">Destinasi</span>
+              <span class="font-serif text-2xl text-white">0{{ activeIndex + 1 }}</span>
+            </div>
+
+            <div class="grid gap-2">
+              <button
+                v-for="(destination, index) in popularDestinations"
+                :key="destination.title"
+                class="destination-nav-item group grid grid-cols-[4.5rem_1fr] items-center gap-3 rounded-[1.1rem] p-2 text-left transition duration-300"
+                :class="index === activeIndex ? 'bg-white text-deep-charcoal' : 'bg-white/8 text-white hover:bg-white/16'"
+                type="button"
+                @click="goToSlide(index)"
+              >
+                <img
+                  class="h-14 w-full rounded-xl object-cover"
+                  :src="destination.thumbnail"
+                  :alt="destination.title"
+                  @error="handleImageError($event, destination)"
+                />
+                <span class="min-w-0">
+                  <span class="block truncate text-sm font-semibold">{{ destination.title }}</span>
+                  <span class="mt-1 block truncate text-xs opacity-65">{{ destination.location }}</span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="absolute inset-x-5 bottom-4 z-20 sm:inset-x-8 lg:inset-x-12">
+          <div class="h-px overflow-hidden rounded-full bg-white/24">
+            <div ref="progressBar" class="h-full origin-left scale-x-0 bg-soft-gold"></div>
+          </div>
+        </div>
+
+        <div class="absolute bottom-10 right-5 z-20 flex items-center gap-2 sm:hidden">
+          <button
+            class="grid size-11 place-items-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur-xl"
+            type="button"
+            aria-label="Destinasi sebelumnya"
+            @click="prevSlide"
+          >
+            <ArrowLeft class="size-5" />
+          </button>
+          <button
+            class="grid size-11 place-items-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur-xl"
+            type="button"
+            aria-label="Destinasi berikutnya"
+            @click="nextSlide"
+          >
+            <ArrowRight class="size-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
