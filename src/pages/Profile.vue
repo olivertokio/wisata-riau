@@ -17,12 +17,12 @@ const saveMessage = ref('')
 let ctx = null
 
 const profile = reactive({
-  name: 'Alya Rahmadini',
-  email: 'alya@eksplorasiriau.id',
+  name: 'Shandi Reskiawan',
+  email: 'shandi@eksplorasiriau.id',
   tagline: 'Menjelajahi Riau melalui pengalaman dan cerita.',
   totalReviews: 8,
   plannedTrips: 5,
-  favoriteCategory: 'Alam & Budaya',
+  favoriteCategory: 'Sejarah & Budaya',
   favoriteBudget: 'Standar ke Premium',
 })
 
