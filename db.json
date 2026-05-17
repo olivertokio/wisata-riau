@@ -44,6 +44,13 @@
       "rating": 5,
       "comment": "sangat sangat rekomendasi buat yang suka sejarah kerajaan",
       "id": "5MP3ai6GUIc"
+    },
+    {
+      "destinationId": 4,
+      "name": "shandi",
+      "rating": 5,
+      "comment": "sangat direkomendasi untuk pencinta sejarah dan budaya",
+      "id": "Nzv_GkcWTXg"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"

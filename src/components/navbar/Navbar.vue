@@ -59,16 +59,14 @@ onBeforeUnmount(() => {
     ref="navRoot"
     class="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[#F7F5F1]/88 backdrop-blur-md"
   >
-    <div class="mx-auto flex h-[5.95rem] w-full max-w-[1600px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-12">
-      <RouterLink to="/" class="flex min-w-0 items-center gap-3 rounded-full pr-2" aria-label="Eksplorasi Riau">
-        <div class="relative grid size-12 shrink-0 place-items-center">
-          <span class="absolute left-1/2 top-1/2 h-5 w-3.5 -translate-x-[90%] -translate-y-1/2 rounded-b-[999px] rounded-t-[999px] bg-[#173626]"></span>
-          <span class="absolute left-1/2 top-1/2 h-5 w-3.5 translate-x-[-5%] -translate-y-1/2 rounded-b-[999px] rounded-t-[999px] bg-[#173626]"></span>
-        </div>
-
-        <div class="min-w-0">
-          <p class="truncate text-[1.95rem] font-semibold tracking-[-0.03em] text-deep-charcoal">Eksplorasi Riau</p>
-        </div>
+    <div class="mx-auto flex h-[6.6rem] w-full max-w-[1600px] items-center justify-between gap-6 px-5 sm:px-8 lg:px-12">
+      <RouterLink to="/" class="flex min-w-0 items-center rounded-full pr-2" aria-label="Eksplorasi Riau">
+        <img
+          src="/icons/logo-tanjak1.png"
+          alt="Logo Tanjak"
+          class="h-[4.4rem] w-auto max-w-[260px] object-contain mix-blend-multiply sm:h-[5.2rem] sm:max-w-[340px]"
+          decoding="async"
+        />
       </RouterLink>
 
       <nav
