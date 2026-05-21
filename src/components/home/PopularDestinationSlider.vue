@@ -340,7 +340,7 @@ onBeforeUnmount(() => {
           <span class="hidden sm:inline">{{ isMuted ? 'Muted' : 'Audio On' }}</span>
         </button>
 
-        <div class="absolute bottom-10 left-5 z-20 flex items-center gap-2 sm:hidden">
+        <div class="absolute right-4 top-16 z-20 flex items-center gap-2 sm:hidden">
           <button
             class="grid size-11 place-items-center rounded-full border border-white/20 bg-white/12 text-white backdrop-blur-xl"
             type="button"
