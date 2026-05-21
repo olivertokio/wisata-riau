@@ -57,6 +57,21 @@ export const tourismLocations = [
     description: 'Bangunan peninggalan militer Belanda di Mempura yang masih berdiri kokoh dan menyimpan jejak sejarah kolonial di Siak.',
   },
   {
+    id: 9,
+    title: 'Rumah Datuk Pesisir',
+    markerCode: 'RDP',
+    category: 'Budaya,Sejarah',
+    location: 'Kecamatan Mempura, Kabupaten Siak',
+    // Koordinat sementara dibuat mendekati area Rumah Datuk Pesisir di koridor wisata Mempura.
+    lat:0.792308,
+    lng: 102.044608,
+    rating: 4.6,
+    detailPath: '/destination/9',
+    image: '/datuk-pesisir/bg.jpg',
+    fallbackImage: 'https://images.unsplash.com/photo-1518002054494-3a6f94352e9d?auto=format&fit=crop&w=900&q=80',
+    description: 'Rumah panggung bersejarah di kawasan Mempura yang menjadi bagian penting dari jejak budaya dan sejarah Kesultanan Siak.',
+  },
+  {
     id: 10,
     title: 'Bono Sungai Kampar',
     markerCode: 'BNO',

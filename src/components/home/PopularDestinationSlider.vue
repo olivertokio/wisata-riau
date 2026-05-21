@@ -25,9 +25,7 @@ let isSectionVisible = false
 const activeDestination = computed(() => popularDestinations[activeIndex.value])
 
 function destinationPath(destination) {
-  return [1, 2, 4].includes(destination.id)
-    ? `/destination/${destination.id}`
-    : `/explore?category=${destination.category}`
+  return destination.detailPath || `/explore?category=${destination.category}`
 }
 
 function shouldReduceMotion() {

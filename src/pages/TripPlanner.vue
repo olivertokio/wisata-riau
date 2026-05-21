@@ -31,13 +31,25 @@ function normalizeArea(area) {
     return area
   }
 
-  return area.toLowerCase()
+  return area.toLowerCase().trim()
+}
+
+function locationMatchesArea(location, area) {
+  if (area === 'semua riau') {
+    return true
+  }
+
+  const normalizedLocation = String(location || '').toLowerCase().trim()
+
+  // Samakan area yang masih satu rumpun, misalnya:
+  // `Siak` <-> `Siak Sri Indrapura` <-> `Kecamatan Mempura, Kabupaten Siak`
+  return normalizedLocation.includes(area) || area.includes(normalizedLocation)
 }
 
 function pickDestinations(preferences) {
   const normalizedArea = normalizeArea(preferences.area)
   const sameCategory = destinations.filter((item) => destinationHasCategory(item, preferences.category))
-  const sameArea = sameCategory.filter((item) => normalizedArea === 'semua riau' || item.location.toLowerCase() === normalizedArea)
+  const sameArea = sameCategory.filter((item) => locationMatchesArea(item.location, normalizedArea))
 
   const basePool = sameArea.length
     ? sameArea

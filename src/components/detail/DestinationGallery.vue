@@ -81,6 +81,26 @@ const pantaiRupatGalleryItems = [
   { image: '/pantai-rupat/3.jpg', text: 'Nuansa Pantai' },
 ]
 
+const sungaiJantanGalleryItems = [
+  // Ganti daftar gambar khusus Tepian Bandar Sungai Jantan di bawah ini saat Anda sudah punya file baru.
+  // Semua file saat ini diambil dari folder lokal: public/sungai-jantan/
+  { image: '/sungai-jantan/bg.jpg', text: 'Tepian Bandar Sungai Jantan' },
+  { image: '/sungai-jantan/1.jpg', text: 'Tepi Sungai Jantan' },
+  { image: '/sungai-jantan/2.jpg', text: 'Ruang Terbuka Hijau' },
+  { image: '/sungai-jantan/3.jpg', text: 'Nuansa Malam Siak' },
+]
+
+const datukPesisirGalleryItems = [
+  // Ganti daftar gambar khusus Rumah Datuk Pesisir di bawah ini saat Anda sudah punya file baru.
+  // Semua file saat ini diambil dari folder lokal: public/datuk-pesisir/
+  { image: '/datuk-pesisir/bg.jpg', text: 'Rumah Datuk Pesisir' },
+  { image: '/datuk-pesisir/1.jpg', text: 'Datuk Pesisir' },
+  { image: '/datuk-pesisir/2.jpg', text: 'Detail Arsitektur Melayu' },
+  { image: '/datuk-pesisir/3.jpg', text: 'Jejak Sejarah Mempura' },
+  { image: '/datuk-pesisir/4.jpg', text: 'Suasana Sekitar Rumah' },
+  { image: '/datuk-pesisir/5.jpg', text: 'Koridor Wisata Siak' },
+]
+
 const galleryItems = computed(() => {
   if (props.destination.id === 4) {
     return siakGalleryItems
@@ -92,6 +112,14 @@ const galleryItems = computed(() => {
 
   if (props.destination.id === 1) {
     return pantaiRupatGalleryItems
+  }
+
+  if (props.destination.id === 8) {
+    return sungaiJantanGalleryItems
+  }
+
+  if (props.destination.id === 9) {
+    return datukPesisirGalleryItems
   }
 
   const primaryCategory = getPrimaryDestinationCategory(props.destination)

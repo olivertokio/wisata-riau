@@ -21,8 +21,8 @@ export const destinations = [
     location: 'Siak Sri Indrapura',
     rating: 4.8,
     reviewCount: 113,
-    latitude: 0.789,
-    longitude: 102.051,
+    latitude: 0.794663,
+    longitude: 102.048819,
     // Ganti gambar hero destinasi Siak di sini.
     // Saat ini memakai file lokal dari folder: public/siak-gallery/
     image: '/siak-gallery/bg.jpg',
@@ -43,8 +43,40 @@ export const destinations = [
     image: '/tangsi-belanda/bg1.jpg',
     description: 'Bangunan peninggalan militer Belanda yang dibangun sekitar tahun 1860, terletak di Kecamatan Mempura dan masih berdiri kokoh.',
   },
+  {
+    id: 8,
+    // Dummy destinasi tambahan untuk itinerary area Siak agar agenda malam tidak meloncat jauh ke luar area.
+    name: 'Tepian Bandar Sungai Jantan',
+    category: 'Budaya,Sejarah',
+    location: 'Siak Sri Indrapura',
+    rating: 4.6,
+    reviewCount: 64,
+    // Koordinat sementara dibuat mendekati kawasan pusat wisata Siak.
+    // Silakan ganti jika nanti sudah ada titik Google Maps yang lebih presisi.
+    latitude: 0.792193,
+    longitude: 102.048490,
+    // Ganti gambar hero destinasi Tepian Bandar Sungai Jantan di sini.
+    image: '/sungai-jantan/bg.jpg',
+    description: 'Area ruang terbuka hijau di tepi sungai ini menjadi lokasi favorit warga dan wisatawan untuk bersantai. Dilengkapi gazebo modern dan tulisan "Tepian Bandar Sungai Jantan" yang menyala terang.',
+  },
+  {
+    id: 9,
+    name: 'Rumah Datuk Pesisir',
+    // Rumah Datuk Pesisir terkait kuat dengan sejarah dan budaya Melayu Siak.
+    category: 'Budaya,Sejarah',
+    location: 'Kecamatan Mempura, Kabupaten Siak',
+    rating: 4.6,
+    reviewCount: 58,
+    // Koordinat sementara dibuat mendekati kawasan Mempura dan disebut berdekatan dengan Tangsi Belanda.
+    // Silakan ganti jika nanti Anda sudah punya titik Google Maps yang lebih presisi.
+    latitude: 0.792308,
+    longitude: 102.044608,
+    // Ganti gambar hero destinasi Rumah Datuk Pesisir di sini.
+    image: '/datuk-pesisir/bg.jpg',
+    description: 'Rumah panggung bersejarah di kawasan Mempura yang dahulu menjadi tempat tinggal Datuk Pesisir, salah satu pembesar penting di lingkungan Kesultanan Siak. Lokasinya berada di sekitar koridor wisata sejarah yang terhubung dengan Tangsi Belanda dan kawasan tepi Sungai Siak.',
+  },
 
-    {
+  {
     id: 2,
     name: 'Candi Muara Takus',
     category: 'Sejarah',
