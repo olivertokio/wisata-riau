@@ -1,6 +1,7 @@
 <script setup>
 import { ArrowRight, MapPin, Sparkles, Star } from 'lucide-vue-next'
 import { computed } from 'vue'
+import { formatDestinationCategories } from '../../utils/destinationCategories'
 
 const props = defineProps({
   featuredDestination: {
@@ -54,7 +55,7 @@ const secondaryDestinations = computed(() => props.destinations.slice(0, 3))
         </div>
 
         <div class="p-5">
-          <span class="text-xs font-semibold uppercase tracking-[0.22em] text-nature-green">{{ featuredDestination.category }}</span>
+          <span class="text-xs font-semibold uppercase tracking-[0.22em] text-nature-green">{{ formatDestinationCategories(featuredDestination.category) }}</span>
           <h4 class="planner-display mt-3 text-2xl font-semibold leading-tight text-deep-charcoal">
             {{ featuredDestination.name }}
           </h4>

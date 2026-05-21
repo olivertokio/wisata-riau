@@ -1,5 +1,6 @@
 <script setup>
 import { ArrowRight, MapPin, Star } from 'lucide-vue-next'
+import { formatDestinationCategories } from '../../utils/destinationCategories'
 
 defineProps({
   destination: {
@@ -25,7 +26,7 @@ defineProps({
 
       <div class="absolute inset-x-4 top-4 flex items-center justify-between gap-3">
         <span class="rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-nature-green shadow-sm backdrop-blur">
-          {{ destination.category }}
+          {{ formatDestinationCategories(destination.category) }}
         </span>
 
         <span class="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/14 px-3 py-1.5 text-sm font-semibold text-white backdrop-blur-xl">

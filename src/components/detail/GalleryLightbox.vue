@@ -122,7 +122,7 @@ onBeforeUnmount(() => {
               />
               <div class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent px-5 pb-5 pt-14 sm:px-7 sm:pb-7">
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-soft-gold">{{ activeImage.eyebrow }}</p>
-                <h3 class="mt-3 font-serif text-2xl font-semibold text-white sm:text-3xl">{{ activeImage.title }}</h3>
+                <h3 class="planner-display mt-3 text-2xl font-semibold text-white sm:text-3xl">{{ activeImage.title }}</h3>
                 <p class="mt-2 max-w-2xl text-sm leading-7 text-white/72 sm:text-base">{{ activeImage.caption }}</p>
               </div>
             </div>

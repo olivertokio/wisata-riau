@@ -3,6 +3,7 @@ import { ArrowRight, Compass } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { categories } from '../../data/categories'
 import { destinations } from '../../data/dummyData'
+import { destinationHasCategory } from '../../utils/destinationCategories'
 import { createScrollReveal } from '../../gsap/scrollReveal'
 
 const categoryRoot = ref(null)
@@ -12,7 +13,7 @@ const categoriesWithCounts = computed(() => {
   return categories.map((category) => ({
     ...category,
     // Jumlah destinasi kategori mengikuti data terbaru di src/data/dummyData.js
-    destinationCount: destinations.filter((destination) => destination.category === category.name).length,
+    destinationCount: destinations.filter((destination) => destinationHasCategory(destination, category.name)).length,
   }))
 })
 

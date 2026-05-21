@@ -21,6 +21,11 @@ import DestinationGallery from '../components/detail/DestinationGallery.vue'
 import ReviewForm from '../components/forms/ReviewForm.vue'
 import { destinations } from '../data/dummyData'
 import { addReview, getReviewsByDestination } from '../services/reviewService'
+import {
+  destinationSharesCategory,
+  formatDestinationCategories,
+  getPrimaryDestinationCategory,
+} from '../utils/destinationCategories'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -58,6 +63,8 @@ const heroImageStyle = computed(() => ({
     : 'linear-gradient(180deg, #1F2933 0%, #2F6B4F 100%)',
 }))
 
+const formattedCategory = computed(() => formatDestinationCategories(destination.value?.category))
+
 const categoryExperienceLabel = computed(() => {
   if (!destination.value) {
     return 'Eksplorasi khas Riau'
@@ -71,7 +78,7 @@ const categoryExperienceLabel = computed(() => {
     Sejarah: 'Eksplorasi sejarah',
   }
 
-  return categoryMap[destination.value.category] || 'Eksplorasi khas Riau'
+  return categoryMap[getPrimaryDestinationCategory(destination.value)] || 'Eksplorasi khas Riau'
 })
 
 const experienceHighlights = computed(() => {
@@ -92,8 +99,8 @@ const experienceHighlights = computed(() => {
     },
     {
       title: categoryExperienceLabel.value,
-      description: `Karakter ${destination.value.category.toLowerCase()} yang terasa kuat dan merepresentasikan pesona destinasi di Riau.`,
-      icon: destination.value.category === 'Kuliner' ? Heart : Compass,
+      description: `Karakter ${formattedCategory.value.toLowerCase()} yang terasa kuat dan merepresentasikan pesona destinasi di Riau.`,
+      icon: getPrimaryDestinationCategory(destination.value) === 'Kuliner' ? Heart : Compass,
     },
   ]
 })
@@ -104,7 +111,7 @@ const relatedDestinations = computed(() => {
   }
 
   return destinations
-    .filter((item) => item.category === destination.value.category && item.id !== destination.value.id)
+    .filter((item) => item.id !== destination.value.id && destinationSharesCategory(item, destination.value))
     .slice(0, 3)
 })
 
@@ -322,7 +329,7 @@ onBeforeUnmount(() => {
               </RouterLink>
 
               <span class="rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm font-semibold text-soft-gold backdrop-blur-xl">
-                {{ destination.category }}
+                {{ formattedCategory }}
               </span>
               <span class="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-4 py-2 text-sm font-semibold text-white backdrop-blur-xl">
                 <Star class="size-4 fill-soft-gold text-soft-gold" />
@@ -339,7 +346,7 @@ onBeforeUnmount(() => {
 
             <h1
               data-detail-hero-copy
-              class="mt-4 font-serif text-5xl font-semibold leading-[0.98] text-white sm:text-6xl lg:text-8xl"
+              class="planner-display mt-4 text-5xl font-semibold leading-[0.98] text-white sm:text-6xl lg:text-8xl"
             >
               {{ destination.name }}
             </h1>
@@ -388,15 +395,15 @@ onBeforeUnmount(() => {
           <div data-detail-hero-copy class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
             <div class="rounded-[1.75rem] border border-white/18 bg-white/10 p-5 text-white shadow-[0_18px_45px_rgba(0,0,0,0.14)] backdrop-blur-xl">
               <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/62">Kategori</p>
-              <strong class="mt-3 block font-serif text-3xl font-semibold">{{ destination.category }}</strong>
+              <strong class="planner-display mt-3 block text-3xl font-semibold">{{ formattedCategory }}</strong>
             </div>
             <div class="rounded-[1.75rem] border border-white/18 bg-white/10 p-5 text-white shadow-[0_18px_45px_rgba(0,0,0,0.14)] backdrop-blur-xl">
               <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/62">Rating</p>
-              <strong class="mt-3 block font-serif text-3xl font-semibold">{{ destination.rating }}</strong>
+              <strong class="planner-display mt-3 block text-3xl font-semibold">{{ destination.rating }}</strong>
             </div>
             <div class="rounded-[1.75rem] border border-white/18 bg-white/10 p-5 text-white shadow-[0_18px_45px_rgba(0,0,0,0.14)] backdrop-blur-xl">
               <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/62">Review Aktif</p>
-              <strong class="mt-3 block font-serif text-3xl font-semibold">{{ destinationReviews.length }}</strong>
+              <strong class="planner-display mt-3 block text-3xl font-semibold">{{ destinationReviews.length }}</strong>
             </div>
           </div>
         </div>
@@ -410,7 +417,7 @@ onBeforeUnmount(() => {
       >
         <div data-detail-info class="rounded-[2rem] border border-white/80 bg-white/95 p-6 shadow-[0_28px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 sm:p-8">
           <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Tentang Destinasi</p>
-          <h2 class="mt-4 font-serif text-4xl font-semibold leading-tight text-deep-charcoal">
+          <h2 class="planner-display mt-4 text-4xl font-semibold leading-tight text-deep-charcoal">
             Pengalaman perjalanan yang merangkum karakter khas Riau.
           </h2>
           <p class="mt-5 text-base leading-8 text-muted-gray">
@@ -444,7 +451,7 @@ onBeforeUnmount(() => {
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="text-xs font-semibold uppercase tracking-[0.24em] text-soft-gold">Info Perjalanan</p>
-                <h3 class="mt-2 font-serif text-2xl font-semibold text-deep-charcoal">Ringkasan Destinasi</h3>
+                <h3 class="planner-display mt-2 text-2xl font-semibold text-deep-charcoal">Ringkasan Destinasi</h3>
               </div>
               <div class="grid size-11 place-items-center rounded-full bg-soft-cream text-soft-gold">
                 <Sparkles class="size-5" />
@@ -458,7 +465,7 @@ onBeforeUnmount(() => {
               </div>
               <div class="rounded-[1.4rem] bg-soft-cream px-4 py-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-gray">Kategori</p>
-                <p class="mt-2 font-semibold text-deep-charcoal">{{ destination.category }}</p>
+                <p class="mt-2 font-semibold text-deep-charcoal">{{ formattedCategory }}</p>
               </div>
               <div class="rounded-[1.4rem] bg-soft-cream px-4 py-4">
                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-gray">Rating</p>
@@ -512,7 +519,7 @@ onBeforeUnmount(() => {
           <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Peta Interaktif</p>
-              <h2 class="mt-4 font-serif text-4xl font-semibold leading-tight">
+              <h2 class="planner-display mt-4 text-4xl font-semibold leading-tight">
                 Rencanakan arah perjalananmu menuju {{ destination.name }}.
               </h2>
               <p class="mt-4 max-w-2xl leading-8 text-white/76">
@@ -567,7 +574,7 @@ onBeforeUnmount(() => {
           class="rounded-[2rem] border border-white/80 bg-white/95 p-6 shadow-[0_28px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 sm:p-8"
         >
           <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Bagikan Pengalaman</p>
-          <h2 class="mt-3 font-serif text-4xl font-semibold text-deep-charcoal">Tulis ulasan perjalananmu</h2>
+          <h2 class="planner-display mt-3 text-4xl font-semibold text-deep-charcoal">Tulis ulasan perjalananmu</h2>
           <p class="mt-3 max-w-xl leading-7 text-muted-gray">
             Ceritakan pengalaman, suasana, dan kesan yang kamu rasakan agar wisatawan lain bisa merencanakan kunjungan dengan lebih baik.
           </p>
@@ -621,12 +628,12 @@ onBeforeUnmount(() => {
           <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Ulasan Pengunjung</p>
-              <h2 class="mt-3 font-serif text-4xl font-semibold text-deep-charcoal">Kesan dari para pelancong</h2>
+              <h2 class="planner-display mt-3 text-4xl font-semibold text-deep-charcoal">Kesan dari para pelancong</h2>
             </div>
 
             <div class="rounded-[1.6rem] bg-soft-cream px-5 py-4 text-right">
               <p class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-gray">Summary Rating</p>
-              <strong class="mt-2 block font-serif text-4xl font-semibold text-deep-charcoal">{{ reviewSummary.average }}</strong>
+              <strong class="planner-display mt-2 block text-4xl font-semibold text-deep-charcoal">{{ reviewSummary.average }}</strong>
               <p class="mt-1 text-sm text-muted-gray">{{ reviewSummary.total }} ulasan aktif</p>
             </div>
           </div>
@@ -698,7 +705,7 @@ onBeforeUnmount(() => {
         <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Destinasi Terkait</p>
-            <h2 class="mt-3 font-serif text-4xl font-semibold text-deep-charcoal">Jelajahi pengalaman serupa di Riau</h2>
+            <h2 class="planner-display mt-3 text-4xl font-semibold text-deep-charcoal">Jelajahi pengalaman serupa di Riau</h2>
           </div>
           <p class="max-w-xl text-sm leading-7 text-muted-gray sm:text-right">
             Kurasi destinasi lain dengan nuansa perjalanan sejenis agar itinerary kamu terasa lebih utuh.
@@ -721,12 +728,12 @@ onBeforeUnmount(() => {
               />
               <div class="absolute inset-0 bg-gradient-to-t from-deep-charcoal/70 via-transparent to-transparent"></div>
               <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.16em] text-nature-green">
-                {{ item.category }}
+                {{ formatDestinationCategories(item.category) }}
               </span>
             </div>
 
             <div class="px-6 pb-6 pt-4">
-              <h3 class="font-serif text-2xl font-semibold text-deep-charcoal">{{ item.name }}</h3>
+              <h3 class="planner-display text-2xl font-semibold text-deep-charcoal">{{ item.name }}</h3>
               <p class="mt-3 flex items-center gap-2 text-sm font-medium text-muted-gray">
                 <MapPin class="size-4 text-nature-green" />
                 {{ item.location }}
@@ -749,7 +756,7 @@ onBeforeUnmount(() => {
   >
     <div class="mx-auto max-w-3xl rounded-[2.25rem] border border-white/80 bg-white/95 p-8 text-center shadow-[0_28px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 sm:p-12">
       <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Destinasi Tidak Ditemukan</p>
-      <h1 class="mt-4 font-serif text-4xl font-semibold text-deep-charcoal sm:text-5xl">
+      <h1 class="planner-display mt-4 text-4xl font-semibold text-deep-charcoal sm:text-5xl">
         Halaman destinasi ini belum tersedia.
       </h1>
       <p class="mt-4 leading-8 text-muted-gray">

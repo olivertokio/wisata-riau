@@ -13,11 +13,12 @@ export const destinations = [
     image: '/pantai-rupat/rupat.jpg',
     description: 'kawasan wisata bahari andalan di Kabupaten Bengkalis, Riau, yang terkenal dengan hamparan pasir putih bersih dan garis pantainya yang panjang.',
   },
-    {
+  {
     id: 4,
     name: 'Istana Siak Sri Indrapura',
-    category: 'Budaya',
-    location: 'Siak',
+    // Untuk kategori ganda, pisahkan dengan koma. Contoh: 'Budaya,Sejarah'
+    category: 'Budaya,Sejarah',
+    location: 'Siak Sri Indrapura',
     rating: 4.8,
     reviewCount: 113,
     latitude: 0.789,
@@ -32,7 +33,7 @@ export const destinations = [
     id: 7,
     name: 'Tangsi Belanda',
     category: 'Sejarah',
-    location: 'Siak Sri Indrapura',
+    location: 'Kecamatan Mempura, Kabupaten Siak',
     rating: 4.7,
     reviewCount: 96,
     latitude: 0.7895168,

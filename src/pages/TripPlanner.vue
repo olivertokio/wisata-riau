@@ -11,6 +11,7 @@ import {
   plannerFallbackDestinations,
 } from '../data/plannerData'
 import { destinations } from '../data/dummyData'
+import { destinationHasCategory, getPrimaryDestinationCategory } from '../utils/destinationCategories'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -35,7 +36,7 @@ function normalizeArea(area) {
 
 function pickDestinations(preferences) {
   const normalizedArea = normalizeArea(preferences.area)
-  const sameCategory = destinations.filter((item) => item.category === preferences.category)
+  const sameCategory = destinations.filter((item) => destinationHasCategory(item, preferences.category))
   const sameArea = sameCategory.filter((item) => normalizedArea === 'semua riau' || item.location.toLowerCase() === normalizedArea)
 
   const basePool = sameArea.length
@@ -99,7 +100,7 @@ function createItinerary(preferences, recommendedDestinations, culinary, stays) 
       area: preferences.area,
       pagi: {
         title: `Mulai hari di ${morning.name}`,
-        description: `Nikmati suasana ${morning.category.toLowerCase()} dengan waktu kunjungan terbaik pada pagi hari dan ritme perjalanan yang lebih tenang.`,
+        description: `Nikmati suasana ${getPrimaryDestinationCategory(morning).toLowerCase()} dengan waktu kunjungan terbaik pada pagi hari dan ritme perjalanan yang lebih tenang.`,
       },
       siang: {
         title: `Cicipi ${culinaryItem}`,

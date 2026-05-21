@@ -8,6 +8,7 @@ import ExploreHero from '../components/explore/ExploreHero.vue'
 import FeaturedRecommendation from '../components/explore/FeaturedRecommendation.vue'
 import { destinations } from '../data/dummyData'
 import { animateExploreCards, createExploreReveal } from '../gsap/exploreReveal'
+import { destinationHasCategory, parseDestinationCategories } from '../utils/destinationCategories'
 
 const route = useRoute()
 const exploreRoot = ref(null)
@@ -19,18 +20,24 @@ const categoryQuickChips = ['Semua', 'Alam', 'Budaya', 'Bahari', 'Kuliner', 'Sej
 let revealContext
 let cardsTween
 
-const categories = computed(() => ['Semua', ...new Set([...categoryQuickChips.slice(1), ...destinations.map((destination) => destination.category)])])
+const categories = computed(() => [
+  'Semua',
+  ...new Set([
+    ...categoryQuickChips.slice(1),
+    ...destinations.flatMap((destination) => parseDestinationCategories(destination.category)),
+  ]),
+])
 const locations = computed(() => ['Semua', ...new Set(destinations.map((destination) => destination.location))])
 
 const filteredDestinations = computed(() => {
   const keyword = query.value.trim().toLowerCase()
 
   return destinations.filter((destination) => {
-    const matchesKeyword = !keyword || [destination.name, destination.category, destination.location]
+    const matchesKeyword = !keyword || [destination.name, ...parseDestinationCategories(destination.category), destination.location]
       .join(' ')
       .toLowerCase()
       .includes(keyword)
-    const matchesCategory = selectedCategory.value === 'Semua' || destination.category === selectedCategory.value
+    const matchesCategory = selectedCategory.value === 'Semua' || destinationHasCategory(destination, selectedCategory.value)
     const matchesLocation = selectedLocation.value === 'Semua' || destination.location === selectedLocation.value
 
     return matchesKeyword && matchesCategory && matchesLocation

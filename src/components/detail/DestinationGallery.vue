@@ -2,6 +2,7 @@
 import { Images } from 'lucide-vue-next'
 import { computed } from 'vue'
 import CircularGallery from '../gallery/CircularGallery.vue'
+import { getPrimaryDestinationCategory } from '../../utils/destinationCategories'
 
 const props = defineProps({
   destination: {
@@ -93,7 +94,8 @@ const galleryItems = computed(() => {
     return pantaiRupatGalleryItems
   }
 
-  const keyword = categoryKeywords[props.destination.category] || 'wisata riau'
+  const primaryCategory = getPrimaryDestinationCategory(props.destination)
+  const keyword = categoryKeywords[primaryCategory] || 'wisata riau'
   const placeholders = placeholderLibrary[keyword] || placeholderLibrary['wisata riau']
 
   return [
@@ -111,12 +113,12 @@ const galleryItems = computed(() => {
     {
       // Gambar tambahan item ketiga.
       image: placeholders[1],
-      text: props.destination.category === 'Budaya' ? 'Budaya Melayu' : 'Pesona Riau',
+      text: primaryCategory === 'Budaya' ? 'Budaya Melayu' : 'Pesona Riau',
     },
     {
       // Gambar tambahan item keempat.
       image: placeholders[2],
-      text: props.destination.category === 'Alam' ? 'Wisata Alam' : 'Travel Story',
+      text: primaryCategory === 'Alam' ? 'Wisata Alam' : 'Travel Story',
     },
   ]
 })
@@ -130,7 +132,7 @@ const galleryItems = computed(() => {
           <p class="text-sm font-semibold uppercase tracking-[0.3em] text-soft-gold">
             Galeri Editorial
           </p>
-          <h2 class="mt-4 font-serif text-4xl font-semibold leading-tight sm:text-5xl">
+          <h2 class="planner-display mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
             Potret suasana destinasi
           </h2>
           <p class="mt-4 max-w-2xl text-sm leading-8 text-white/68 sm:text-base">
