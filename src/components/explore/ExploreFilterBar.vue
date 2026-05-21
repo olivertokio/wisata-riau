@@ -47,7 +47,7 @@ function selectQuickChip(category) {
   <div class="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-10">
     <div
       data-explore-filter
-      class="sticky top-[5.6rem] z-30 overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 p-4 shadow-[0_18px_55px_rgba(31,41,51,0.08)] ring-1 ring-black/5 backdrop-blur-2xl sm:p-5"
+      class="sticky top-[5rem] z-30 overflow-hidden rounded-[2rem] border border-white/70 bg-white/80 p-4 shadow-[0_18px_55px_rgba(31,41,51,0.08)] ring-1 ring-black/5 backdrop-blur-2xl sm:top-[5.6rem] sm:p-5"
     >
       <div class="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div>
@@ -58,7 +58,7 @@ function selectQuickChip(category) {
         </div>
 
         <button
-          class="inline-flex w-fit items-center gap-2 rounded-full border border-black/8 bg-soft-cream px-4 py-2.5 text-sm font-semibold text-deep-charcoal transition duration-300 hover:-translate-y-0.5 hover:border-soft-gold/40 hover:bg-white"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-black/8 bg-soft-cream px-4 py-2.5 text-sm font-semibold text-deep-charcoal transition duration-300 hover:-translate-y-0.5 hover:border-soft-gold/40 hover:bg-white sm:w-fit"
           type="button"
           @click="$emit('reset')"
         >
@@ -82,7 +82,7 @@ function selectQuickChip(category) {
         </button>
       </div>
 
-      <div class="mt-5 grid gap-3 lg:grid-cols-[1fr_1fr]">
+      <div class="mt-5 grid gap-3 md:grid-cols-2">
         <label class="block">
           <span class="mb-2 flex items-center gap-2 px-1 text-sm font-semibold text-muted-gray">
             <ListFilter class="size-4 text-nature-green" />

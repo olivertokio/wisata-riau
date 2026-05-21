@@ -52,7 +52,7 @@ function handleInput(event) {
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(201,162,39,0.2),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(47,107,79,0.22),transparent_32%)]"></div>
       <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/35 to-transparent"></div>
 
-      <div class="relative mx-auto max-w-7xl px-6 py-12 text-white sm:px-8 sm:py-16 lg:px-12 lg:py-20">
+      <div class="relative mx-auto max-w-7xl px-5 py-10 text-white sm:px-8 sm:py-16 lg:px-12 lg:py-20">
         <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-end">
           <div>
             <p
@@ -65,14 +65,14 @@ function handleInput(event) {
 
             <h1
               data-explore-hero
-              class="planner-display mt-6 max-w-4xl text-4xl font-semibold leading-[1.02] text-white sm:text-5xl lg:text-7xl"
+              class="planner-display mt-6 max-w-4xl text-3xl font-semibold leading-[1.02] text-white sm:text-5xl lg:text-7xl"
             >
               Temukan destinasi terbaik di seluruh Riau
             </h1>
 
             <p
               data-explore-hero
-              class="mt-5 max-w-2xl text-base leading-8 text-white/74 sm:text-lg"
+              class="mt-5 max-w-2xl text-base leading-7 text-white/74 sm:text-lg sm:leading-8"
             >
               Panduan visual untuk menjelajahi pesisir, warisan budaya, spot alam, dan pengalaman kuliner terbaik dari berbagai sudut Provinsi Riau.
             </p>
@@ -81,7 +81,7 @@ function handleInput(event) {
               data-explore-hero
               class="mt-8 max-w-2xl rounded-[1.75rem] border border-white/18 bg-white/12 p-3 shadow-[0_18px_45px_rgba(0,0,0,0.16)] backdrop-blur-2xl"
             >
-              <div class="flex items-center gap-3 rounded-[1.35rem] bg-white px-4 py-4 sm:px-5">
+              <div class="flex flex-col gap-3 rounded-[1.35rem] bg-white px-4 py-4 sm:flex-row sm:items-center sm:px-5">
                 <div class="grid size-11 shrink-0 place-items-center rounded-full bg-soft-cream text-nature-green">
                   <Search class="size-5" />
                 </div>

@@ -21,7 +21,7 @@ const secondaryDestinations = computed(() => props.destinations.slice(0, 3))
   <aside
     v-if="featuredDestination"
     data-explore-featured
-    class="order-1 xl:order-2 xl:sticky xl:top-[11rem]"
+    class="order-1 mx-auto w-full max-w-2xl xl:order-2 xl:max-w-none xl:sticky xl:top-[11rem]"
   >
     <div class="overflow-hidden rounded-[2rem] border border-white/80 bg-white/95 p-4 shadow-[0_28px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 backdrop-blur">
       <div class="flex items-center justify-between gap-3 px-2 pb-4">

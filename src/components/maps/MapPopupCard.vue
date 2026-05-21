@@ -16,7 +16,7 @@ function handleImageError(event, destination) {
 </script>
 
 <template>
-  <article class="w-[18.5rem] overflow-hidden rounded-[1.4rem] bg-white text-deep-charcoal shadow-[0_28px_70px_rgba(31,41,51,0.22)] ring-1 ring-black/5">
+  <article class="w-[min(18.5rem,calc(100vw-4.5rem))] overflow-hidden rounded-[1.4rem] bg-white text-deep-charcoal shadow-[0_28px_70px_rgba(31,41,51,0.22)] ring-1 ring-black/5">
     <div class="relative h-36 overflow-hidden">
       <img
         class="h-full w-full object-cover"
@@ -32,7 +32,7 @@ function handleImageError(event, destination) {
 
     <div class="p-4">
       <div class="flex items-start justify-between gap-3">
-        <h3 class="font-serif text-xl font-semibold leading-tight">{{ destination.title }}</h3>
+        <h3 class="planner-display text-xl font-semibold leading-tight">{{ destination.title }}</h3>
         <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-soft-cream px-2.5 py-1 text-sm font-semibold text-soft-gold">
           <Star class="size-3.5 fill-soft-gold" />
           {{ destination.rating }}

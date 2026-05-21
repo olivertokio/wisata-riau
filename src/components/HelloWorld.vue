@@ -1,8 +1,8 @@
 <script setup>
 import { ref } from 'vue'
-import viteLogo from '../assets/vite.svg'
-import heroImg from '../assets/hero.png'
-import vueLogo from '../assets/vue.svg'
+import viteLogo from '../icons/logo-tanjak1.png'
+import heroImg from '../icons/logo-tanjak1.png'
+import vueLogo from '../icons/logo-tanjak1.png'
 
 const count = ref(0)
 </script>
@@ -34,7 +34,7 @@ const count = ref(0)
       <p>Your questions, answered</p>
       <ul>
         <li>
-          <a href="https://vite.dev/" target="_blank">
+          <a href="/icons/logo-tanjak1.png" target="_blank">
             <img class="logo" :src="viteLogo" alt="" />
             Explore Vite
           </a>

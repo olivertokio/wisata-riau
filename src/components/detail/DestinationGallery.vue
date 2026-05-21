@@ -153,14 +153,14 @@ const galleryItems = computed(() => {
 </script>
 
 <template>
-  <section class="mt-16 overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#15201c_0%,#1F2933_42%,#0e1714_100%)] py-16 text-white shadow-[0_34px_100px_rgba(31,41,51,0.2)] sm:py-20">
+  <section class="mt-16 overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#15201c_0%,#1F2933_42%,#0e1714_100%)] py-14 text-white shadow-[0_34px_100px_rgba(31,41,51,0.2)] sm:py-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-10">
       <div class="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div class="max-w-3xl">
           <p class="text-sm font-semibold uppercase tracking-[0.3em] text-soft-gold">
             Galeri Editorial
           </p>
-          <h2 class="planner-display mt-4 text-4xl font-semibold leading-tight sm:text-5xl">
+          <h2 class="planner-display mt-4 text-3xl font-semibold leading-tight sm:text-5xl">
             Potret suasana destinasi
           </h2>
           <p class="mt-4 max-w-2xl text-sm leading-8 text-white/68 sm:text-base">
@@ -176,7 +176,7 @@ const galleryItems = computed(() => {
         </div>
       </div>
 
-      <div class="relative mt-10 h-[520px] overflow-hidden rounded-[2rem] border border-white/10 bg-black/20 shadow-[0_26px_90px_rgba(0,0,0,0.22)] sm:h-[620px]">
+      <div class="relative mt-10 h-[24rem] overflow-hidden rounded-[2rem] border border-white/10 bg-black/20 shadow-[0_26px_90px_rgba(0,0,0,0.22)] sm:h-[32rem] lg:h-[38rem]">
         <div class="pointer-events-none absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b from-black/28 to-transparent"></div>
         <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-black/32 to-transparent"></div>
         <!-- Ganti item gambar CircularGallery lewat computed `galleryItems` di file ini. -->

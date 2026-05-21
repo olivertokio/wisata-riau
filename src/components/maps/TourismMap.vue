@@ -99,8 +99,8 @@ function bindMarker(destination) {
   marker.bindPopup(createPopup(destination), {
     className: 'tourism-popup',
     closeButton: false,
-    maxWidth: 320,
-    minWidth: 296,
+    maxWidth: 300,
+    minWidth: 220,
     offset: [0, -8],
   })
 
@@ -204,7 +204,7 @@ onBeforeUnmount(() => {
         </p>
       </div>
 
-      <div class="mt-10 grid gap-5 lg:grid-cols-[22rem_1fr] lg:items-stretch">
+      <div class="mt-8 grid gap-5 lg:grid-cols-[minmax(0,20rem)_1fr] lg:items-stretch lg:gap-6">
         <aside class="space-y-5">
           <MapFilters v-model:active-category="activeCategory" />
 
@@ -224,9 +224,9 @@ onBeforeUnmount(() => {
           </div>
         </aside>
 
-        <div class="tourism-map-frame map-reveal relative min-h-[34rem] overflow-hidden rounded-[2.35rem] bg-deep-charcoal p-2 shadow-[0_36px_110px_rgba(47,107,79,0.18)] ring-1 ring-black/5 lg:min-h-[42rem]">
+        <div class="tourism-map-frame map-reveal relative min-h-[28rem] overflow-hidden rounded-[2.35rem] bg-deep-charcoal p-2 shadow-[0_36px_110px_rgba(47,107,79,0.18)] ring-1 ring-black/5 sm:min-h-[34rem] lg:min-h-[42rem]">
           <div class="pointer-events-none absolute inset-2 z-[410] rounded-[1.85rem] bg-[linear-gradient(120deg,rgba(31,41,51,0.18),transparent_38%,rgba(201,162,39,0.12)_100%)]"></div>
-          <div ref="mapElement" class="h-full min-h-[32.5rem] rounded-[1.85rem] lg:min-h-[40.5rem]"></div>
+          <div ref="mapElement" class="h-full min-h-[26rem] rounded-[1.85rem] sm:min-h-[32.5rem] lg:min-h-[40.5rem]"></div>
         </div>
       </div>
     </div>

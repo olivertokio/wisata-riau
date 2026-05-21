@@ -5,7 +5,7 @@ import Navbar from '../components/navbar/Navbar.vue'
 <template>
   <div class="min-h-screen bg-premium-white text-deep-charcoal">
     <Navbar />
-    <main>
+    <main class="overflow-x-hidden">
       <slot />
     </main>
   </div>

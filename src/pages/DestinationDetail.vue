@@ -306,7 +306,7 @@ onBeforeUnmount(() => {
     ref="detailRoot"
     class="bg-[linear-gradient(180deg,#FDFCF8_0%,#F8F4EC_24%,#FDFCF8_100%)] pb-24"
   >
-    <header class="relative isolate min-h-[46rem] overflow-hidden">
+    <header class="relative isolate min-h-[34rem] overflow-hidden sm:min-h-[40rem] lg:min-h-[46rem]">
       <div
         data-detail-hero-image
         class="absolute inset-0 bg-cover bg-center"
@@ -316,7 +316,7 @@ onBeforeUnmount(() => {
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(201,162,39,0.22),transparent_28%),radial-gradient(circle_at_bottom_left,rgba(47,107,79,0.18),transparent_30%)]"></div>
       <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#FDFCF8] to-transparent"></div>
 
-      <div class="relative mx-auto flex min-h-[46rem] max-w-7xl items-end px-4 pb-14 pt-32 sm:px-6 lg:px-10 lg:pb-20">
+      <div class="relative mx-auto flex min-h-[34rem] max-w-7xl items-end px-4 pb-10 pt-28 sm:min-h-[40rem] sm:px-6 sm:pb-14 sm:pt-32 lg:min-h-[46rem] lg:px-10 lg:pb-20">
         <div class="grid w-full gap-10 lg:grid-cols-[minmax(0,1fr)_21rem] lg:items-end">
           <div class="max-w-4xl">
             <div data-detail-hero-copy class="flex flex-wrap items-center gap-3">
@@ -346,7 +346,7 @@ onBeforeUnmount(() => {
 
             <h1
               data-detail-hero-copy
-              class="planner-display mt-4 text-5xl font-semibold leading-[0.98] text-white sm:text-6xl lg:text-8xl"
+              class="planner-display mt-4 text-4xl font-semibold leading-[0.98] text-white sm:text-6xl lg:text-8xl"
             >
               {{ destination.name }}
             </h1>
@@ -361,7 +361,7 @@ onBeforeUnmount(() => {
 
             <p
               data-detail-hero-copy
-              class="mt-6 max-w-2xl text-base leading-8 text-white/74 sm:text-lg"
+              class="mt-6 max-w-2xl text-sm leading-7 text-white/74 sm:text-lg sm:leading-8"
             >
               {{ destination.description }}
             </p>
@@ -392,7 +392,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <div data-detail-hero-copy class="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+          <div data-detail-hero-copy class="grid gap-3 min-[480px]:grid-cols-3 lg:grid-cols-1">
             <div class="rounded-[1.75rem] border border-white/18 bg-white/10 p-5 text-white shadow-[0_18px_45px_rgba(0,0,0,0.14)] backdrop-blur-xl">
               <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/62">Kategori</p>
               <strong class="planner-display mt-3 block text-3xl font-semibold">{{ formattedCategory }}</strong>
@@ -417,7 +417,7 @@ onBeforeUnmount(() => {
       >
         <div data-detail-info class="rounded-[2rem] border border-white/80 bg-white/95 p-6 shadow-[0_28px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 sm:p-8">
           <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Tentang Destinasi</p>
-          <h2 class="planner-display mt-4 text-4xl font-semibold leading-tight text-deep-charcoal">
+          <h2 class="planner-display mt-4 text-3xl font-semibold leading-tight text-deep-charcoal sm:text-4xl">
             Pengalaman perjalanan yang merangkum karakter khas Riau.
           </h2>
           <p class="mt-5 text-base leading-8 text-muted-gray">
@@ -519,7 +519,7 @@ onBeforeUnmount(() => {
           <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-center">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Peta Interaktif</p>
-              <h2 class="planner-display mt-4 text-4xl font-semibold leading-tight">
+              <h2 class="planner-display mt-4 text-3xl font-semibold leading-tight sm:text-4xl">
                 Rencanakan arah perjalananmu menuju {{ destination.name }}.
               </h2>
               <p class="mt-4 max-w-2xl leading-8 text-white/76">
@@ -574,7 +574,7 @@ onBeforeUnmount(() => {
           class="rounded-[2rem] border border-white/80 bg-white/95 p-6 shadow-[0_28px_80px_rgba(31,41,51,0.08)] ring-1 ring-black/5 sm:p-8"
         >
           <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Bagikan Pengalaman</p>
-          <h2 class="planner-display mt-3 text-4xl font-semibold text-deep-charcoal">Tulis ulasan perjalananmu</h2>
+          <h2 class="planner-display mt-3 text-3xl font-semibold text-deep-charcoal sm:text-4xl">Tulis ulasan perjalananmu</h2>
           <p class="mt-3 max-w-xl leading-7 text-muted-gray">
             Ceritakan pengalaman, suasana, dan kesan yang kamu rasakan agar wisatawan lain bisa merencanakan kunjungan dengan lebih baik.
           </p>
@@ -628,10 +628,10 @@ onBeforeUnmount(() => {
           <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Ulasan Pengunjung</p>
-              <h2 class="planner-display mt-3 text-4xl font-semibold text-deep-charcoal">Kesan dari para pelancong</h2>
+              <h2 class="planner-display mt-3 text-3xl font-semibold text-deep-charcoal sm:text-4xl">Kesan dari para pelancong</h2>
             </div>
 
-            <div class="rounded-[1.6rem] bg-soft-cream px-5 py-4 text-right">
+            <div class="rounded-[1.6rem] bg-soft-cream px-5 py-4 text-left sm:text-right">
               <p class="text-xs font-semibold uppercase tracking-[0.18em] text-muted-gray">Summary Rating</p>
               <strong class="planner-display mt-2 block text-4xl font-semibold text-deep-charcoal">{{ reviewSummary.average }}</strong>
               <p class="mt-1 text-sm text-muted-gray">{{ reviewSummary.total }} ulasan aktif</p>
@@ -705,7 +705,7 @@ onBeforeUnmount(() => {
         <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p class="text-sm font-semibold uppercase tracking-[0.24em] text-soft-gold">Destinasi Terkait</p>
-            <h2 class="planner-display mt-3 text-4xl font-semibold text-deep-charcoal">Jelajahi pengalaman serupa di Riau</h2>
+            <h2 class="planner-display mt-3 text-3xl font-semibold text-deep-charcoal sm:text-4xl">Jelajahi pengalaman serupa di Riau</h2>
           </div>
           <p class="max-w-xl text-sm leading-7 text-muted-gray sm:text-right">
             Kurasi destinasi lain dengan nuansa perjalanan sejenis agar itinerary kamu terasa lebih utuh.

@@ -222,10 +222,10 @@ onBeforeUnmount(() => {
 <template>
   <section
     ref="sliderRoot"
-    class="relative isolate overflow-hidden bg-premium-white py-16 lg:py-24"
+    class="relative isolate overflow-hidden bg-premium-white py-14 sm:py-16 lg:py-24"
     aria-labelledby="popular-slider-title"
   >
-    <div class="destination-shell relative mx-auto h-[46rem] max-w-[94rem] overflow-hidden bg-deep-charcoal shadow-[0_42px_120px_rgba(31,41,51,0.24)] ring-1 ring-black/5 sm:rounded-[2.5rem] lg:h-[50rem]">
+    <div class="destination-shell relative mx-auto h-[36rem] max-w-[94rem] overflow-hidden bg-deep-charcoal shadow-[0_42px_120px_rgba(31,41,51,0.24)] ring-1 ring-black/5 sm:h-[42rem] sm:rounded-[2.5rem] lg:h-[50rem]">
       <video
         v-if="!videoFailed"
         ref="videoRef"
@@ -254,7 +254,7 @@ onBeforeUnmount(() => {
       <div class="destination-overlay absolute inset-0 bg-[linear-gradient(90deg,rgba(10,18,15,0.92)_0%,rgba(10,18,15,0.64)_42%,rgba(10,18,15,0.24)_72%,rgba(10,18,15,0.72)_100%)]"></div>
       <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/75 to-transparent"></div>
 
-      <div class="relative z-10 flex h-full flex-col justify-between px-5 py-6 sm:px-8 sm:py-8 lg:px-12 lg:py-10">
+      <div class="relative z-10 flex h-full flex-col justify-between px-4 py-5 sm:px-8 sm:py-8 lg:px-12 lg:py-10">
         <div class="flex items-center justify-between gap-4">
           <div class="destination-copy">
             <p class="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/12 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-soft-gold backdrop-blur-xl">
@@ -284,20 +284,20 @@ onBeforeUnmount(() => {
         </div>
 
         <div class="destination-copy max-w-4xl">
-            <p class="mb-5 inline-flex items-center gap-2 rounded-full bg-soft-gold px-4 py-2 text-sm font-semibold text-deep-charcoal">
+            <p class="mb-4 inline-flex items-center gap-2 rounded-full bg-soft-gold px-4 py-2 text-sm font-semibold text-deep-charcoal sm:mb-5">
               {{ activeDestination.category }}
             </p>
-            <h2 id="popular-slider-title" class="planner-display text-5xl font-semibold leading-[0.98] text-white sm:text-7xl lg:text-8xl">
+            <h2 id="popular-slider-title" class="planner-display text-4xl font-semibold leading-[0.98] text-white sm:text-6xl lg:text-8xl">
               {{ activeDestination.title }}
             </h2>
-            <p class="mt-6 flex items-center gap-2 text-base font-semibold text-white/78">
+            <p class="mt-5 flex items-center gap-2 text-sm font-semibold text-white/78 sm:mt-6 sm:text-base">
               <MapPin class="size-5 text-soft-gold" />
               {{ activeDestination.location }}
             </p>
-            <p class="mt-5 max-w-2xl text-base leading-8 text-white/72 sm:text-lg">
+            <p class="mt-4 max-w-2xl text-sm leading-7 text-white/72 sm:mt-5 sm:text-lg sm:leading-8">
               {{ activeDestination.description }}
             </p>
-            <div class="mt-7 flex flex-wrap items-center gap-3">
+            <div class="mt-6 flex flex-wrap items-center gap-3 sm:mt-7">
               <RouterLink
                 class="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-deep-charcoal transition duration-300 hover:-translate-y-0.5 hover:bg-soft-gold"
                 :to="destinationPath(activeDestination)"
@@ -307,12 +307,12 @@ onBeforeUnmount(() => {
               </RouterLink>
               <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/12 px-4 py-3 text-sm font-semibold text-white backdrop-blur-xl">
                 <Star class="size-4 fill-soft-gold text-soft-gold" />
-                {{ activeDestination.rating }} · {{ activeDestination.reviewCount }} ulasan
+                {{ activeDestination.rating }} &middot; {{ activeDestination.reviewCount }} ulasan
               </span>
             </div>
         </div>
 
-        <div class="absolute inset-x-5 bottom-4 z-20 sm:inset-x-8 lg:inset-x-12">
+        <div class="absolute inset-x-4 bottom-3 z-20 sm:inset-x-8 sm:bottom-4 lg:inset-x-12">
           <div class="h-px overflow-hidden rounded-full bg-white/24">
             <div ref="progressBar" class="h-full origin-left scale-x-0 bg-soft-gold"></div>
           </div>
@@ -320,7 +320,7 @@ onBeforeUnmount(() => {
 
         <button
           v-if="!videoFailed"
-          class="absolute bottom-12 right-5 z-20 inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/12 px-4 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-deep-charcoal sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-12"
+          class="absolute bottom-16 right-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/12 px-4 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-deep-charcoal sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-12"
           type="button"
           :aria-label="isMuted ? 'Aktifkan suara video' : 'Matikan suara video'"
           @click="toggleSound"
@@ -337,7 +337,7 @@ onBeforeUnmount(() => {
             <VolumeX v-if="isMuted" key="muted" class="size-4.5" />
             <Volume2 v-else key="unmuted" class="size-4.5" />
           </Transition>
-          <span>{{ isMuted ? 'Muted' : 'Audio On' }}</span>
+          <span class="hidden sm:inline">{{ isMuted ? 'Muted' : 'Audio On' }}</span>
         </button>
 
         <div class="absolute bottom-10 left-5 z-20 flex items-center gap-2 sm:hidden">

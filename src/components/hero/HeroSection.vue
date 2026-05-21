@@ -104,22 +104,22 @@ onBeforeUnmount(() => {
 <template>
   <section
     ref="heroRoot"
-    class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#FDFCF8_0%,#F7F3EA_48%,#FFFFFF_100%)] px-4 pb-16 pt-32 sm:px-6 lg:px-10 lg:pb-24 lg:pt-36"
+    class="relative isolate overflow-hidden bg-[linear-gradient(135deg,#FDFCF8_0%,#F7F3EA_48%,#FFFFFF_100%)] px-4 pb-14 pt-28 sm:px-6 sm:pt-32 lg:px-10 lg:pb-24 lg:pt-36"
   >
     <div class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-soft-gold/40 to-transparent"></div>
     <div class="pointer-events-none absolute inset-x-6 top-28 h-28 rounded-[2rem] border border-white/50 bg-white/30 blur-2xl"></div>
 
-    <div class="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.92fr_1.08fr]">
+    <div class="relative mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.92fr_1.08fr] lg:gap-12">
       <div class="max-w-3xl">
         <p class="hero-copy-item inline-flex rounded-full border border-soft-gold/30 bg-white/75 px-4 py-2 text-sm font-semibold text-nature-green shadow-sm backdrop-blur-xl">
           Premium tourism guide of Riau
         </p>
 
-        <h1 class="hero-copy-item planner-display mt-6 text-5xl font-semibold leading-[1.02] text-deep-charcoal sm:text-6xl lg:text-7xl">
+        <h1 class="hero-copy-item planner-display mt-6 text-4xl font-semibold leading-[1.02] text-deep-charcoal sm:text-5xl lg:text-7xl">
           Jelajahi Riau dengan rasa sinematik dan tenang.
         </h1>
 
-        <p class="hero-copy-item mt-6 max-w-2xl text-base leading-8 text-muted-gray sm:text-lg">
+        <p class="hero-copy-item mt-5 max-w-2xl text-base leading-7 text-muted-gray sm:mt-6 sm:leading-8 sm:text-lg">
           Temukan wisata alam, budaya, sejarah, dan kuliner Riau dalam pengalaman visual yang premium, cepat, dan mudah dipakai di desktop maupun mobile.
         </p>
 
@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
           </RouterLink>
         </div>
 
-        <div class="hero-copy-item mt-10 grid max-w-xl grid-cols-3 gap-3">
+        <div class="hero-copy-item mt-8 grid max-w-xl grid-cols-1 gap-3 min-[420px]:grid-cols-3 sm:mt-10">
           <div class="rounded-3xl border border-white/70 bg-white/70 p-4 shadow-sm backdrop-blur">
             <strong class="block text-2xl text-nature-green">50+</strong>
             <span class="text-sm text-muted-gray">Destinasi</span>
@@ -157,9 +157,9 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div class="relative min-h-[34rem]">
+      <div class="relative min-h-[24rem] sm:min-h-[30rem] lg:min-h-[34rem]">
         <div ref="floatingLayer" class="pointer-events-none absolute inset-0 z-30">
-          <div class="hero-float-item hero-drift absolute -left-1 top-16 z-40 hidden w-48 overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/80 p-2 shadow-2xl shadow-green-950/15 backdrop-blur-xl sm:block lg:-left-8">
+          <div class="hero-float-item hero-drift absolute -left-1 top-16 z-40 hidden w-48 overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/80 p-2 shadow-2xl shadow-green-950/15 backdrop-blur-xl xl:-left-8 xl:block">
             <img class="h-28 w-full rounded-[1.1rem] object-cover" :src="floatingDestinations[0]?.image" :alt="floatingDestinations[0]?.name" />
             <div class="px-2 py-3">
               <p class="text-xs font-semibold text-soft-gold">{{ floatingDestinations[0]?.category }}</p>
@@ -167,17 +167,17 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <div class="hero-float-item hero-drift absolute -right-1 bottom-12 z-40 w-52 overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/85 p-2 shadow-2xl shadow-green-950/15 backdrop-blur-xl sm:w-60 lg:-right-5">
-            <img class="h-32 w-full rounded-[1.1rem] object-cover" :src="floatingDestinations[1]?.image" :alt="floatingDestinations[1]?.name" />
+          <div class="hero-float-item hero-drift absolute -right-1 bottom-6 z-40 hidden w-44 overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/85 p-2 shadow-2xl shadow-green-950/15 backdrop-blur-xl sm:block sm:w-56 lg:-right-5 lg:bottom-12 lg:w-60">
+            <img class="h-28 w-full rounded-[1.1rem] object-cover sm:h-32" :src="floatingDestinations[1]?.image" :alt="floatingDestinations[1]?.name" />
             <div class="px-2 py-3">
               <p class="text-xs font-semibold text-soft-gold">{{ floatingDestinations[1]?.category }}</p>
               <p class="mt-1 font-semibold">{{ floatingDestinations[1]?.name }}</p>
             </div>
           </div>
 
-          <div class="hero-float-item absolute right-6 top-8 z-40 rounded-full border border-white/70 bg-white/85 px-4 py-3 shadow-xl shadow-green-950/10 backdrop-blur-xl">
+          <div class="hero-float-item absolute right-4 top-4 z-40 rounded-full border border-white/70 bg-white/85 px-3 py-2.5 shadow-xl shadow-green-950/10 backdrop-blur-xl sm:right-6 sm:top-8 sm:px-4 sm:py-3">
             <div class="flex items-center gap-2">
-              <span class="grid size-9 place-items-center rounded-full bg-soft-gold text-white">
+              <span class="grid size-8 place-items-center rounded-full bg-soft-gold text-white sm:size-9">
                 <Star class="size-4 fill-white" />
               </span>
               <div>
@@ -187,7 +187,7 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
-          <div class="hero-float-item absolute left-4 bottom-24 z-40 rounded-full border border-white/70 bg-white/85 px-4 py-3 shadow-xl shadow-green-950/10 backdrop-blur-xl sm:left-12">
+          <div class="hero-float-item absolute bottom-20 left-4 z-40 hidden rounded-full border border-white/70 bg-white/85 px-4 py-3 shadow-xl shadow-green-950/10 backdrop-blur-xl sm:left-8 sm:block lg:left-12">
             <div class="flex items-center gap-2">
               <span class="grid size-9 place-items-center rounded-full bg-nature-green text-white">
                 <MapPin class="size-4" />
@@ -200,10 +200,10 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <div class="relative z-10 overflow-hidden rounded-[2.25rem] bg-white p-3 shadow-[0_40px_120px_rgba(47,107,79,0.18)] ring-1 ring-black/5">
+        <div class="relative z-10 overflow-hidden rounded-[2rem] bg-white p-2 shadow-[0_40px_120px_rgba(47,107,79,0.18)] ring-1 ring-black/5 sm:rounded-[2.25rem] sm:p-3">
           <img
             ref="heroImage"
-            class="h-[34rem] w-full rounded-[1.75rem] object-cover"
+            class="h-[24rem] w-full rounded-[1.5rem] object-cover sm:h-[30rem] sm:rounded-[1.75rem] lg:h-[34rem]"
             :src="featuredDestination.image"
             :alt="featuredDestination.name"
           />

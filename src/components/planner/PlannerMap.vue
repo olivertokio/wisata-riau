@@ -173,7 +173,7 @@ onBeforeUnmount(() => {
 <template>
   <section
     data-planner-map
-    class="planner-sans relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#FDFCF8_0%,#F7F3EA_48%,#FDFCF8_100%)] px-5 py-7 sm:px-6 lg:px-10 lg:py-9"
+    class="planner-sans relative overflow-hidden border-y border-black/8 bg-[linear-gradient(180deg,#FDFCF8_0%,#F7F3EA_48%,#FDFCF8_100%)] px-4 py-6 sm:px-6 lg:px-10 lg:py-9"
   >
     <div class="pointer-events-none absolute inset-x-0 top-0 h-44 bg-[radial-gradient(circle_at_top_left,rgba(47,107,79,0.10),transparent_42%),radial-gradient(circle_at_top_right,rgba(201,162,39,0.15),transparent_34%)]"></div>
 
@@ -184,7 +184,7 @@ onBeforeUnmount(() => {
             <Compass class="size-3.5 text-soft-gold" />
             Planner Map
           </p>
-          <h3 class="planner-display mt-4 text-[1.9rem] font-semibold leading-tight text-deep-charcoal sm:text-[2.15rem]">
+          <h3 class="planner-display mt-4 text-[1.7rem] font-semibold leading-tight text-deep-charcoal sm:text-[2.15rem]">
             Peta rute rekomendasi yang terasa lebih hidup.
           </h3>
           <p class="mt-3 max-w-xl text-sm leading-7 text-muted-gray">
@@ -208,7 +208,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div class="mt-6 grid gap-4 xl:grid-cols-[0.78fr_1.22fr]">
+      <div class="mt-6 grid gap-4 xl:grid-cols-[minmax(0,0.78fr)_minmax(0,1.22fr)]">
         <aside class="rounded-[1.9rem] border border-white/80 bg-white/80 p-5 shadow-[0_24px_68px_rgba(31,41,51,0.08)] ring-1 ring-black/5 backdrop-blur-xl">
           <div class="flex items-start justify-between gap-4">
             <div>
@@ -274,7 +274,7 @@ onBeforeUnmount(() => {
         </aside>
 
         <div class="relative overflow-hidden rounded-[2rem] bg-deep-charcoal p-2 shadow-[0_34px_100px_rgba(47,107,79,0.18)] ring-1 ring-black/5">
-          <div class="absolute left-5 top-5 z-[500] flex flex-wrap gap-2">
+          <div class="absolute left-3 top-3 z-[500] flex max-w-[calc(100%-1.5rem)] flex-wrap gap-2 sm:left-5 sm:top-5">
             <span class="rounded-full border border-white/15 bg-white/12 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-xl">
               {{ validDestinations.length }} titik aktif
             </span>
@@ -285,10 +285,10 @@ onBeforeUnmount(() => {
           <div class="pointer-events-none absolute inset-2 z-[410] rounded-[1.5rem] bg-[linear-gradient(120deg,rgba(31,41,51,0.16),transparent_38%,rgba(201,162,39,0.14)_100%)]"></div>
           <div
             ref="mapElement"
-            class="h-[21rem] w-full rounded-[1.5rem] sm:h-[24rem] lg:h-[29rem]"
+            class="h-[18rem] w-full rounded-[1.5rem] sm:h-[24rem] lg:h-[29rem]"
           ></div>
 
-          <div class="absolute bottom-4 left-4 z-[500] max-w-xs rounded-[1rem] border border-white/15 bg-white/88 px-4 py-3 shadow-[0_14px_38px_rgba(31,41,51,0.18)] backdrop-blur-xl">
+          <div class="absolute bottom-4 left-4 z-[500] hidden max-w-xs rounded-[1rem] border border-white/15 bg-white/88 px-4 py-3 shadow-[0_14px_38px_rgba(31,41,51,0.18)] backdrop-blur-xl sm:block">
             <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-soft-gold">Live route preview</p>
             <p class="mt-1.5 text-sm leading-6 text-deep-charcoal">
               Geser peta untuk membaca persebaran destinasi. Zoom manual tersedia di sudut kanan bawah.
