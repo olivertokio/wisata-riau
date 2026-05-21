@@ -37,7 +37,7 @@ onBeforeUnmount(() => {
       <div class="popular-reveal flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p class="font-semibold text-nature-green">Destinasi populer</p>
-          <h2 id="popular-title" class="mt-3 font-serif text-4xl font-semibold leading-tight text-deep-charcoal sm:text-5xl">
+          <h2 id="popular-title" class="planner-display mt-3 text-4xl font-semibold leading-tight text-deep-charcoal sm:text-5xl">
             Pilihan wisatawan minggu ini.
           </h2>
         </div>
@@ -75,7 +75,7 @@ onBeforeUnmount(() => {
           <div class="p-5">
             <div class="flex items-start justify-between gap-4">
               <div class="min-w-0">
-                <h3 class="font-serif text-2xl font-semibold leading-tight text-deep-charcoal">
+                <h3 class="planner-display text-2xl font-semibold leading-tight text-deep-charcoal">
                   {{ destination.name }}
                 </h3>
                 <p class="mt-3 flex items-center gap-2 text-sm font-medium text-muted-gray">

@@ -194,7 +194,7 @@ onBeforeUnmount(() => {
             <Compass class="size-4 text-soft-gold" />
             Interactive tourism map
           </p>
-          <h2 id="tourism-map-title" class="map-reveal mt-5 max-w-3xl font-serif text-4xl font-semibold leading-tight text-deep-charcoal sm:text-5xl">
+          <h2 id="tourism-map-title" class="map-reveal planner-display mt-5 max-w-3xl text-4xl font-semibold leading-tight text-deep-charcoal sm:text-5xl">
             Temukan Riau dari titik perjalanan yang hidup.
           </h2>
         </div>
@@ -214,7 +214,7 @@ onBeforeUnmount(() => {
                 <MapPin class="size-5" />
               </span>
               <div>
-                <p class="font-serif text-2xl font-semibold text-deep-charcoal">{{ getVisibleLocations().length }}</p>
+                <p class="planner-display text-2xl font-semibold text-deep-charcoal">{{ getVisibleLocations().length }}</p>
                 <p class="text-sm text-muted-gray">titik destinasi aktif</p>
               </div>
             </div>

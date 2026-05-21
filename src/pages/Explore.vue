@@ -121,7 +121,7 @@ onBeforeUnmount(() => {
           <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div data-explore-section>
               <p class="text-sm font-semibold uppercase tracking-[0.22em] text-soft-gold">Pilihan Destinasi</p>
-              <h2 class="mt-3 font-serif text-3xl font-semibold leading-tight text-deep-charcoal sm:text-4xl">
+              <h2 class="planner-display mt-3 text-3xl font-semibold leading-tight text-deep-charcoal sm:text-4xl">
                 Jelajahi lanskap alam, budaya, dan cerita khas Riau.
               </h2>
             </div>
@@ -154,7 +154,7 @@ onBeforeUnmount(() => {
 
               <div>
                 <p class="text-sm font-semibold uppercase tracking-[0.22em] text-soft-gold">Belum Ada Hasil</p>
-                <h3 class="mt-3 font-serif text-3xl font-semibold text-deep-charcoal">
+                <h3 class="planner-display mt-3 text-3xl font-semibold text-deep-charcoal">
                   Belum ada destinasi yang cocok dengan pencarianmu.
                 </h3>
                 <p class="mt-3 max-w-2xl leading-7 text-muted-gray">

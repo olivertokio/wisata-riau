@@ -1,17 +1,49 @@
 export const destinations = [
   {
     id: 1,
-    name: 'Pulau Jemur',
+    name: 'Pantai Rupat',
     category: 'Bahari',
-    location: 'Rokan Hilir',
+    location: 'Bengkalis',
     rating: 4.8,
     reviewCount: 128,
-    latitude: 2.874,
-    longitude: 100.589,
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1400&q=80',
-    description: 'Gugusan pulau dengan pantai tenang, air jernih, dan panorama laut khas pesisir Riau.',
+    latitude: 2.125054,
+    longitude: 101.6558571,
+    // Ganti gambar hero destinasi Pantai Rupat di sini.
+    // Saat ini memakai file lokal dari folder: public/pantai-rupat/
+    image: '/pantai-rupat/rupat.jpg',
+    description: 'kawasan wisata bahari andalan di Kabupaten Bengkalis, Riau, yang terkenal dengan hamparan pasir putih bersih dan garis pantainya yang panjang.',
   },
+    {
+    id: 4,
+    name: 'Istana Siak Sri Indrapura',
+    category: 'Budaya',
+    location: 'Siak',
+    rating: 4.8,
+    reviewCount: 113,
+    latitude: 0.789,
+    longitude: 102.051,
+    // Ganti gambar hero destinasi Siak di sini.
+    // Saat ini memakai file lokal dari folder: public/siak-gallery/
+    image: '/siak-gallery/bg.jpg',
+    description: 'Peninggalan Kesultanan Siak dengan arsitektur megah dan koleksi sejarah Melayu yang kuat.',
+  },
+
   {
+    id: 7,
+    name: 'Tangsi Belanda',
+    category: 'Sejarah',
+    location: 'Siak Sri Indrapura',
+    rating: 4.7,
+    reviewCount: 96,
+    latitude: 0.7895168,
+    longitude: 102.0540545,
+    // Ganti gambar hero destinasi Tangsi Belanda di sini.
+    // Saat ini memakai file lokal dari folder: public/tangsi-belanda/
+    image: '/tangsi-belanda/bg1.jpg',
+    description: 'Bangunan peninggalan militer Belanda yang dibangun sekitar tahun 1860, terletak di Kecamatan Mempura dan masih berdiri kokoh.',
+  },
+
+    {
     id: 2,
     name: 'Candi Muara Takus',
     category: 'Sejarah',
@@ -35,18 +67,7 @@ export const destinations = [
     image: 'https://images.unsplash.com/photo-1703769605297-cc74106244d9?q=80&w=2084&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
     description: 'Kawasan perbukitan dengan pemandangan danau yang sering dijuluki Raja Ampat dari Riau.',
   },
-  {
-    id: 4,
-    name: 'Istana Siak Sri Indrapura',
-    category: 'Budaya',
-    location: 'Siak',
-    rating: 4.8,
-    reviewCount: 113,
-    latitude: 0.789,
-    longitude: 102.051,
-    image: 'https://i.pinimg.com/1200x/f0/18/d3/f018d33ff1373fe5a17737bcbe96cc45.jpg',
-    description: 'Peninggalan Kesultanan Siak dengan arsitektur megah dan koleksi sejarah Melayu yang kuat.',
-  },
+
   {
     id: 5,
     name: 'Air Terjun Aek Martua',

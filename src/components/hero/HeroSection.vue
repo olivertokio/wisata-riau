@@ -12,7 +12,11 @@ const heroRoot = ref(null)
 const heroImage = ref(null)
 const floatingLayer = ref(null)
 
-const featuredDestination = computed(() => destinations[2])
+const featuredDestination = computed(() => {
+  // Ganti hero utama beranda di sini.
+  // Sementara memakai destinasi Istana Siak Sri Indrapura agar nanti mudah Anda sesuaikan lagi.
+  return destinations.find((destination) => destination.id === 4) || destinations[0]
+})
 const floatingDestinations = computed(() => [destinations[0], destinations[3]].filter(Boolean))
 
 let observer
@@ -111,7 +115,7 @@ onBeforeUnmount(() => {
           Premium tourism guide of Riau
         </p>
 
-        <h1 class="hero-copy-item mt-6 font-serif text-5xl font-semibold leading-[1.02] text-deep-charcoal sm:text-6xl lg:text-7xl">
+        <h1 class="hero-copy-item planner-display mt-6 text-5xl font-semibold leading-[1.02] text-deep-charcoal sm:text-6xl lg:text-7xl">
           Jelajahi Riau dengan rasa sinematik dan tenang.
         </h1>
 

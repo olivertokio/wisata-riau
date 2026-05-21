@@ -1,7 +1,8 @@
 <script setup>
 import { ArrowUpRight } from 'lucide-vue-next'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { categories } from '../../data/categories'
+import { destinations } from '../../data/dummyData'
 import {
   animateCategoryHover,
   animateCategoryLeave,
@@ -10,6 +11,14 @@ import {
 
 const showcaseRoot = ref(null)
 let animationContext
+
+const categoriesWithCounts = computed(() => {
+  return categories.map((category) => ({
+    ...category,
+    // Jumlah destinasi kategori mengikuti data terbaru di src/data/dummyData.js
+    destinationCount: destinations.filter((destination) => destination.category === category.name).length,
+  }))
+})
 
 const cardLayouts = [
   'lg:col-span-7 lg:min-h-[34rem]',
@@ -63,7 +72,7 @@ onBeforeUnmount(() => {
       <div class="grid gap-8 lg:grid-cols-[0.86fr_1.14fr] lg:items-end">
         <div>
           <p class="category-kicker text-sm font-semibold uppercase text-soft-gold">Riau by experience</p>
-          <h2 id="category-showcase-title" class="category-heading mt-4 max-w-3xl font-serif text-4xl font-semibold leading-[1.06] text-white sm:text-6xl">
+          <h2 id="category-showcase-title" class="category-heading planner-display mt-4 max-w-3xl text-4xl font-semibold leading-[1.06] text-white sm:text-6xl">
             Lima cara membaca lanskap Riau.
           </h2>
         </div>
@@ -75,7 +84,7 @@ onBeforeUnmount(() => {
 
       <div class="category-showcase-grid mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-12 lg:gap-6">
         <RouterLink
-          v-for="(category, index) in categories"
+          v-for="(category, index) in categoriesWithCounts"
           :key="category.id"
           class="category-showcase-card group relative min-h-[27rem] overflow-hidden rounded-[2.25rem] bg-black shadow-[0_34px_100px_rgba(0,0,0,0.28)] ring-1 ring-white/10"
           :class="cardClass(index)"
@@ -103,8 +112,9 @@ onBeforeUnmount(() => {
           </span>
 
           <div class="category-content absolute inset-x-0 bottom-0 p-6 sm:p-7">
-            <p class="text-sm font-semibold text-soft-gold">{{ category.destinationCount }} destinasi contoh</p>
-            <h3 class="mt-3 font-serif text-4xl font-semibold leading-none text-white sm:text-5xl">
+            <!-- Ubah label count kategori di sini jika nanti ingin diganti lagi. -->
+            <p class="text-sm font-semibold text-soft-gold">{{ category.destinationCount }} destinasi</p>
+            <h3 class="planner-display mt-3 text-4xl font-semibold leading-none text-white sm:text-5xl">
               {{ category.name }}
             </h3>
             <p class="mt-4 max-w-xl text-sm leading-7 text-white/72 sm:text-base">

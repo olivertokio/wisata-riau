@@ -49,7 +49,50 @@ const placeholderLibrary = {
   ],
 }
 
+const siakGalleryItems = [
+  // Ganti daftar gambar khusus Siak di bawah ini saat Anda sudah punya file baru.
+  // Semua file saat ini diambil dari folder lokal: public/siak-gallery/
+  { image: '/siak-gallery/istana%20siak.jpg', text: 'Istana Siak' },
+  { image: '/siak-gallery/siak1.jpg', text: 'Fasad Siak' },
+  { image: '/siak-gallery/siak2.jpg', text: 'Detail Arsitektur' },
+  { image: '/siak-gallery/siak3.jpg', text: 'Interior Istana' },
+  { image: '/siak-gallery/siak4.jpg', text: 'Nuansa Kesultanan' },
+  { image: '/siak-gallery/5.jpg', text: 'Ruang Pamer Siak' },
+]
+
+const tangsiBelandaGalleryItems = [
+  // Ganti daftar gambar khusus Tangsi Belanda di bawah ini saat Anda sudah punya file baru.
+  // Semua file saat ini diambil dari folder lokal: public/tangsi-belanda/
+  { image: '/tangsi-belanda/bg1.jpg', text: 'Tangsi Belanda' },
+  { image: '/tangsi-belanda/bg.jpg', text: 'Fasad Bangunan' },
+  { image: '/tangsi-belanda/1.jpg', text: 'Sudut Tangsi' },
+  { image: '/tangsi-belanda/2.jpg', text: 'Detail Sejarah' },
+  { image: '/tangsi-belanda/3.jpg', text: 'Ruang dan Struktur' },
+  { image: '/tangsi-belanda/images%20(1).jpg', text: 'Nuansa Tangsi' },
+]
+
+const pantaiRupatGalleryItems = [
+  // Ganti daftar gambar khusus Pantai Rupat di bawah ini saat Anda sudah punya file baru.
+  // Semua file saat ini diambil dari folder lokal: public/pantai-rupat/
+  { image: '/pantai-rupat/rupat.jpg', text: 'Pantai Rupat' },
+  { image: '/pantai-rupat/1.jpg', text: 'Lautan Rupat' },
+  { image: '/pantai-rupat/2.jpg', text: 'Pesisir Rupat' },
+  { image: '/pantai-rupat/3.jpg', text: 'Nuansa Pantai' },
+]
+
 const galleryItems = computed(() => {
+  if (props.destination.id === 4) {
+    return siakGalleryItems
+  }
+
+  if (props.destination.id === 7) {
+    return tangsiBelandaGalleryItems
+  }
+
+  if (props.destination.id === 1) {
+    return pantaiRupatGalleryItems
+  }
+
   const keyword = categoryKeywords[props.destination.category] || 'wisata riau'
   const placeholders = placeholderLibrary[keyword] || placeholderLibrary['wisata riau']
 

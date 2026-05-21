@@ -26,7 +26,7 @@ const secondaryDestinations = computed(() => props.destinations.slice(0, 3))
       <div class="flex items-center justify-between gap-3 px-2 pb-4">
         <div>
           <p class="text-xs font-semibold uppercase tracking-[0.24em] text-soft-gold">Rekomendasi Teratas</p>
-          <h3 class="mt-2 font-serif text-2xl font-semibold text-deep-charcoal">Pilihan editor</h3>
+          <h3 class="planner-display mt-2 text-2xl font-semibold text-deep-charcoal">Pilihan editor</h3>
         </div>
 
         <div class="grid size-11 place-items-center rounded-full bg-soft-cream text-soft-gold">
@@ -55,7 +55,7 @@ const secondaryDestinations = computed(() => props.destinations.slice(0, 3))
 
         <div class="p-5">
           <span class="text-xs font-semibold uppercase tracking-[0.22em] text-nature-green">{{ featuredDestination.category }}</span>
-          <h4 class="mt-3 font-serif text-2xl font-semibold leading-tight text-deep-charcoal">
+          <h4 class="planner-display mt-3 text-2xl font-semibold leading-tight text-deep-charcoal">
             {{ featuredDestination.name }}
           </h4>
           <p class="mt-3 flex items-center gap-2 text-sm font-medium text-muted-gray">
@@ -93,7 +93,7 @@ const secondaryDestinations = computed(() => props.destinations.slice(0, 3))
               <span class="mt-1 block truncate text-xs text-muted-gray">{{ destination.location }}</span>
             </span>
 
-            <span class="font-serif text-lg text-soft-gold">0{{ index + 2 }}</span>
+            <span class="planner-display text-lg text-soft-gold">0{{ index + 2 }}</span>
           </RouterLink>
         </div>
       </div>

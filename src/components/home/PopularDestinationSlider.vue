@@ -289,7 +289,7 @@ onBeforeUnmount(() => {
             <p class="mb-5 inline-flex items-center gap-2 rounded-full bg-soft-gold px-4 py-2 text-sm font-semibold text-deep-charcoal">
               {{ activeDestination.category }}
             </p>
-            <h2 id="popular-slider-title" class="font-serif text-5xl font-semibold leading-[0.98] text-white sm:text-7xl lg:text-8xl">
+            <h2 id="popular-slider-title" class="planner-display text-5xl font-semibold leading-[0.98] text-white sm:text-7xl lg:text-8xl">
               {{ activeDestination.title }}
             </h2>
             <p class="mt-6 flex items-center gap-2 text-base font-semibold text-white/78">

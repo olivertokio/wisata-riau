@@ -43,7 +43,7 @@ defineProps({
     </div>
 
     <div class="px-6 pb-6 pt-4">
-      <h3 class="font-serif text-[1.8rem] font-semibold leading-tight text-deep-charcoal">
+      <h3 class="planner-display text-[1.8rem] font-semibold leading-tight text-deep-charcoal">
         {{ destination.name }}
       </h3>
 

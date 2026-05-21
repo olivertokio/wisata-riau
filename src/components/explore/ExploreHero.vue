@@ -65,7 +65,7 @@ function handleInput(event) {
 
             <h1
               data-explore-hero
-              class="mt-6 max-w-4xl font-serif text-4xl font-semibold leading-[1.02] text-white sm:text-5xl lg:text-7xl"
+              class="planner-display mt-6 max-w-4xl text-4xl font-semibold leading-[1.02] text-white sm:text-5xl lg:text-7xl"
             >
               Temukan destinasi terbaik di seluruh Riau
             </h1>
@@ -109,7 +109,7 @@ function handleInput(event) {
               class="rounded-[1.65rem] border border-white/18 bg-white/12 p-5 text-white shadow-[0_14px_40px_rgba(0,0,0,0.12)] backdrop-blur-xl"
             >
               <p class="text-xs font-semibold uppercase tracking-[0.22em] text-white/62">{{ item.label }}</p>
-              <strong class="mt-3 block font-serif text-3xl font-semibold sm:text-4xl">{{ item.value }}</strong>
+              <strong class="planner-display mt-3 block text-3xl font-semibold sm:text-4xl">{{ item.value }}</strong>
             </article>
           </div>
         </div>

@@ -1,11 +1,20 @@
 <script setup>
 import { ArrowRight, Compass } from 'lucide-vue-next'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { categories } from '../../data/categories'
+import { destinations } from '../../data/dummyData'
 import { createScrollReveal } from '../../gsap/scrollReveal'
 
 const categoryRoot = ref(null)
 let revealContext
+
+const categoriesWithCounts = computed(() => {
+  return categories.map((category) => ({
+    ...category,
+    // Jumlah destinasi kategori mengikuti data terbaru di src/data/dummyData.js
+    destinationCount: destinations.filter((destination) => destination.category === category.name).length,
+  }))
+})
 
 onMounted(() => {
   revealContext = createScrollReveal(categoryRoot.value, {
@@ -36,7 +45,7 @@ onBeforeUnmount(() => {
             <Compass class="size-4 text-soft-gold" />
             Kategori wisata
           </p>
-          <h2 id="category-title" class="mt-5 max-w-xl font-serif text-4xl font-semibold leading-tight text-deep-charcoal sm:text-5xl">
+          <h2 id="category-title" class="planner-display mt-5 max-w-xl text-4xl font-semibold leading-tight text-deep-charcoal sm:text-5xl">
             Pilih cara terbaik menikmati Riau.
           </h2>
         </div>
@@ -48,7 +57,7 @@ onBeforeUnmount(() => {
 
       <div class="-mx-4 mt-11 flex snap-x gap-4 overflow-x-auto px-4 pb-5 sm:-mx-6 sm:px-6 lg:mx-0 lg:grid lg:grid-cols-5 lg:overflow-visible lg:px-0 lg:pb-0">
         <RouterLink
-          v-for="(category, index) in categories"
+          v-for="(category, index) in categoriesWithCounts"
           :key="category.id"
           class="category-reveal group relative min-h-[24rem] min-w-[18.5rem] snap-start overflow-hidden rounded-[2rem] bg-deep-charcoal text-white shadow-[0_28px_70px_rgba(31,41,51,0.10)] ring-1 ring-black/5 transition duration-500 hover:-translate-y-2 hover:shadow-[0_36px_90px_rgba(47,107,79,0.20)] lg:min-w-0"
           :to="`/explore?category=${category.name}`"
@@ -70,8 +79,9 @@ onBeforeUnmount(() => {
 
           <div class="absolute inset-x-0 bottom-0 p-5">
             <div class="mb-4 h-px w-full bg-gradient-to-r from-white/45 via-soft-gold/80 to-transparent"></div>
-            <p class="text-sm font-semibold text-soft-gold">{{ category.destinationCount }} destinasi contoh</p>
-            <h3 class="mt-2 font-serif text-3xl font-semibold">{{ category.name }}</h3>
+            <!-- Ubah label count kategori di sini jika nanti ingin diganti lagi. -->
+            <p class="text-sm font-semibold text-soft-gold">{{ category.destinationCount }} destinasi</p>
+            <h3 class="planner-display mt-2 text-3xl font-semibold">{{ category.name }}</h3>
             <p class="mt-3 min-h-20 text-sm leading-6 text-white/76">
               {{ category.description }}
             </p>
