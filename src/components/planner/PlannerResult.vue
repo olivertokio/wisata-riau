@@ -87,7 +87,7 @@ defineProps({
           </div>
         </div>
 
-        <div class="mt-4 grid gap-3">
+        <div v-if="result.destinations.length > 0" class="mt-4 grid gap-3">
           <RouterLink
             v-for="destination in result.destinations.slice(0, 3)"
             :key="destination.id"
@@ -100,6 +100,13 @@ defineProps({
               <span class="mt-1 block truncate text-xs text-muted-gray">{{ destination.location }} &middot; {{ destination.rating }}</span>
             </span>
           </RouterLink>
+        </div>
+
+        <div v-else class="mt-4 rounded-[1rem] border border-dashed border-black/8 bg-soft-cream/60 p-4">
+          <p class="text-sm font-semibold text-deep-charcoal">Belum ada destinasi dari Supabase</p>
+          <p class="mt-1 text-sm leading-6 text-muted-gray">
+            Planner tidak membuat destinasi cadangan lokal. Isi tabel destinasi atau periksa akses Supabase agar rekomendasi muncul.
+          </p>
         </div>
       </section>
 
@@ -162,12 +169,19 @@ defineProps({
         </p>
       </div>
 
-      <div class="mt-6 grid gap-4 xl:grid-cols-2">
+      <div v-if="result.itinerary.length > 0" class="mt-6 grid gap-4 xl:grid-cols-2">
         <ItineraryCard
           v-for="day in result.itinerary"
           :key="day.dayNumber"
           :day="day"
         />
+      </div>
+
+      <div v-else class="mt-6 rounded-[1rem] border border-dashed border-black/8 bg-soft-cream/60 p-5">
+        <p class="font-semibold text-deep-charcoal">Itinerary belum bisa dibuat.</p>
+        <p class="mt-2 text-sm leading-6 text-muted-gray">
+          Tidak ada destinasi Supabase yang cocok dengan preferensi ini.
+        </p>
       </div>
     </section>
 

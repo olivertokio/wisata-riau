@@ -2,10 +2,10 @@
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import gsap from 'gsap'
-import { createApp, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, createApp, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Compass, MapPin } from 'lucide-vue-next'
 import router from '../../router'
-import { tourismLocations } from '../../data/locations'
+import { getDestinations } from '../../services/destinationService'
 import { animatePopup, createMapReveal, revealMarkers } from '../../gsap/mapReveal'
 import MapFilters from './MapFilters.vue'
 import MapPopupCard from './MapPopupCard.vue'
@@ -13,6 +13,7 @@ import MapPopupCard from './MapPopupCard.vue'
 const mapRoot = ref(null)
 const mapElement = ref(null)
 const activeCategory = ref('Semua')
+const destinations = ref([])
 
 let map
 let revealContext
@@ -22,6 +23,34 @@ const markers = new Map()
 
 const riauCenter = [0.62, 101.72]
 
+const tourismLocations = computed(() => {
+  return destinations.value
+    .filter((destination) => destination.latitude != null && destination.longitude != null)
+    .map((destination) => ({
+      ...destination,
+      lat: Number(destination.latitude),
+      lng: Number(destination.longitude),
+      markerCode: createMarkerCode(destination.name),
+    }))
+})
+
+const mapCategories = computed(() => [
+  'Semua',
+  ...new Set(tourismLocations.value.flatMap((destination) => destination.category
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean))),
+])
+
+function createMarkerCode(name) {
+  return String(name || 'WS')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 3)
+    .map((word) => word.charAt(0).toUpperCase())
+    .join('')
+}
+
 function markerIcon(destination, isActive = true) {
   return L.divIcon({
     className: '',
@@ -29,7 +58,7 @@ function markerIcon(destination, isActive = true) {
     iconAnchor: [32, 23],
     popupAnchor: [0, -20],
     html: `
-      <button class="tourism-marker ${isActive ? 'is-active' : 'is-muted'}" type="button" aria-label="${destination.title}">
+      <button class="tourism-marker ${isActive ? 'is-active' : 'is-muted'}" type="button" aria-label="${destination.name}">
         <span class="tourism-marker__pulse"></span>
         <span class="tourism-marker__core">${destination.markerCode}</span>
       </button>
@@ -46,10 +75,10 @@ function destinationHasCategory(destination, category) {
 
 function getVisibleLocations() {
   if (activeCategory.value === 'Semua') {
-    return tourismLocations
+    return tourismLocations.value
   }
 
-  return tourismLocations.filter((destination) => destinationHasCategory(destination, activeCategory.value))
+  return tourismLocations.value.filter((destination) => destinationHasCategory(destination, activeCategory.value))
 }
 
 function createPopup(destination) {
@@ -126,7 +155,13 @@ function updateMarkers() {
   }
 
   markers.forEach((marker, id) => {
-    const destination = tourismLocations.find((item) => item.id === id)
+    const destination = tourismLocations.value.find((item) => item.id === id)
+    if (!destination) {
+      marker.remove()
+      markers.delete(id)
+      return
+    }
+
     const isActive = activeCategory.value === 'Semua' || destinationHasCategory(destination, activeCategory.value)
     marker.setIcon(markerIcon(destination, isActive))
     marker.setOpacity(isActive ? 1 : 0.28)
@@ -145,6 +180,7 @@ function updateMarkers() {
 
 onMounted(async () => {
   revealContext = createMapReveal(mapRoot.value)
+  destinations.value = await getDestinations()
 
   map = L.map(mapElement.value, {
     zoomControl: false,
@@ -161,7 +197,7 @@ onMounted(async () => {
   }).addTo(map)
 
   markerLayer = L.layerGroup().addTo(map)
-  tourismLocations.forEach(bindMarker)
+  tourismLocations.value.forEach(bindMarker)
 
   await nextTick()
   map.invalidateSize()
@@ -206,7 +242,7 @@ onBeforeUnmount(() => {
 
       <div class="mt-8 grid gap-5 lg:grid-cols-[minmax(0,20rem)_1fr] lg:items-stretch lg:gap-6">
         <aside class="space-y-5">
-          <MapFilters v-model:active-category="activeCategory" />
+          <MapFilters v-model:active-category="activeCategory" :categories="mapCategories" />
 
           <div class="map-reveal rounded-[1.75rem] border border-black/5 bg-white/75 p-5 shadow-[0_22px_60px_rgba(31,41,51,0.07)] backdrop-blur-2xl">
             <div class="flex items-center gap-3">

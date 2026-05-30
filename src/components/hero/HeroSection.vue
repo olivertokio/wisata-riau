@@ -4,25 +4,28 @@ import gsap from 'gsap'
 import { Observer } from 'gsap/Observer'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { destinations } from '../../data/dummyData'
+import { getDestinations } from '../../services/destinationService'
 
 gsap.registerPlugin(ScrollTrigger, Observer)
 
 const heroRoot = ref(null)
 const heroImage = ref(null)
 const floatingLayer = ref(null)
+const destinations = ref([])
 
-const featuredDestination = computed(() => {
-  // Ganti hero utama beranda di sini.
-  // Sementara memakai destinasi Istana Siak Sri Indrapura agar nanti mudah Anda sesuaikan lagi.
-  return destinations.find((destination) => destination.id === 4) || destinations[0]
+const featuredDestination = computed(() => destinations.value[0] || null)
+const floatingDestinations = computed(() => destinations.value.slice(1, 3))
+const averageRating = computed(() => {
+  const total = destinations.value.reduce((sum, destination) => sum + Number(destination.rating || 0), 0)
+  return destinations.value.length ? (total / destinations.value.length).toFixed(1) : '0.0'
 })
-const floatingDestinations = computed(() => [destinations[0], destinations[3]].filter(Boolean))
 
 let observer
 let context
 
-onMounted(() => {
+onMounted(async () => {
+  destinations.value = await getDestinations()
+
   context = gsap.context(() => {
     const timeline = gsap.timeline({
       defaults: {
@@ -143,7 +146,7 @@ onBeforeUnmount(() => {
 
         <div class="hero-copy-item mt-8 grid max-w-xl grid-cols-1 gap-3 min-[420px]:grid-cols-3 sm:mt-10">
           <div class="rounded-3xl border border-white/70 bg-white/70 p-4 shadow-sm backdrop-blur">
-            <strong class="block text-2xl text-nature-green">50+</strong>
+            <strong class="block text-2xl text-nature-green">{{ destinations.length }}</strong>
             <span class="text-sm text-muted-gray">Destinasi</span>
           </div>
           <div class="rounded-3xl border border-white/70 bg-white/70 p-4 shadow-sm backdrop-blur">
@@ -151,13 +154,13 @@ onBeforeUnmount(() => {
             <span class="text-sm text-muted-gray">Kategori</span>
           </div>
           <div class="rounded-3xl border border-white/70 bg-white/70 p-4 shadow-sm backdrop-blur">
-            <strong class="block text-2xl text-nature-green">4.8</strong>
+            <strong class="block text-2xl text-nature-green">{{ averageRating }}</strong>
             <span class="text-sm text-muted-gray">Rating</span>
           </div>
         </div>
       </div>
 
-      <div class="relative min-h-[24rem] sm:min-h-[30rem] lg:min-h-[34rem]">
+      <div v-if="featuredDestination" class="relative min-h-[24rem] sm:min-h-[30rem] lg:min-h-[34rem]">
         <div ref="floatingLayer" class="pointer-events-none absolute inset-0 z-30">
           <div class="hero-float-item hero-drift absolute -left-1 top-16 z-40 hidden w-48 overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/80 p-2 shadow-2xl shadow-green-950/15 backdrop-blur-xl xl:-left-8 xl:block">
             <img class="h-28 w-full rounded-[1.1rem] object-cover" :src="floatingDestinations[0]?.image" :alt="floatingDestinations[0]?.name" />
@@ -182,7 +185,7 @@ onBeforeUnmount(() => {
               </span>
               <div>
                 <p class="text-sm font-semibold">{{ featuredDestination.rating }} rating</p>
-                <p class="text-xs text-muted-gray">{{ featuredDestination.reviewCount }} ulasan</p>
+                <p class="text-xs text-muted-gray">{{ featuredDestination.reviewCount || 0 }} ulasan</p>
               </div>
             </div>
           </div>

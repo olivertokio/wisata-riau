@@ -1,11 +1,14 @@
 <script setup>
 import { SlidersHorizontal } from 'lucide-vue-next'
-import { mapCategories } from '../../data/locations'
 
 defineProps({
   activeCategory: {
     type: String,
     default: 'Semua',
+  },
+  categories: {
+    type: Array,
+    default: () => ['Semua'],
   },
 })
 
@@ -23,7 +26,7 @@ const emit = defineEmits(['update:activeCategory'])
 
     <div class="flex gap-2 overflow-x-auto pb-1 lg:flex-wrap">
       <button
-        v-for="category in mapCategories"
+        v-for="category in categories"
         :key="category"
         class="shrink-0 rounded-full px-4 py-2.5 text-sm font-semibold transition duration-300"
         :class="activeCategory === category

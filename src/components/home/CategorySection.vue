@@ -2,22 +2,23 @@
 import { ArrowRight, Compass } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { categories } from '../../data/categories'
-import { destinations } from '../../data/dummyData'
+import { getDestinations } from '../../services/destinationService'
 import { destinationHasCategory } from '../../utils/destinationCategories'
 import { createScrollReveal } from '../../gsap/scrollReveal'
 
 const categoryRoot = ref(null)
+const destinations = ref([])
 let revealContext
 
 const categoriesWithCounts = computed(() => {
   return categories.map((category) => ({
     ...category,
-    // Jumlah destinasi kategori mengikuti data terbaru di src/data/dummyData.js
-    destinationCount: destinations.filter((destination) => destinationHasCategory(destination, category.name)).length,
+    destinationCount: destinations.value.filter((destination) => destinationHasCategory(destination, category.name)).length,
   }))
 })
 
-onMounted(() => {
+onMounted(async () => {
+  destinations.value = await getDestinations()
   revealContext = createScrollReveal(categoryRoot.value, {
     targets: '.category-reveal',
     start: 'top 74%',

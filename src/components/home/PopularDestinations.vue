@@ -1,19 +1,26 @@
 <script setup>
 import { ArrowRight, MapPin, Star } from 'lucide-vue-next'
-import { onBeforeUnmount, onMounted, ref } from 'vue'
-import { popularDestinations } from '../../data/destinations'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { getDestinations } from '../../services/destinationService'
 import { createScrollReveal } from '../../gsap/scrollReveal'
 
 const popularRoot = ref(null)
+const destinations = ref([])
 let revealContext
 
+const popularDestinations = computed(() => {
+  return [...destinations.value]
+    .sort((left, right) => Number(right.rating || 0) - Number(left.rating || 0))
+    .slice(0, 3)
+})
+
 function destinationPath(destination) {
-  return [1, 2, 4].includes(destination.id)
-    ? `/destination/${destination.id}`
-    : `/explore?category=${destination.category}`
+  return `/destination/${destination.id}`
 }
 
-onMounted(() => {
+onMounted(async () => {
+  destinations.value = await getDestinations()
+
   revealContext = createScrollReveal(popularRoot.value, {
     targets: '.popular-reveal',
     start: 'top 74%',
@@ -54,7 +61,7 @@ onBeforeUnmount(() => {
       <div class="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <article
           v-for="destination in popularDestinations"
-          :key="destination.name"
+          :key="destination.id"
           class="popular-reveal group overflow-hidden rounded-[2rem] border border-white/70 bg-white p-2 shadow-[0_22px_70px_rgba(31,41,51,0.08)] ring-1 ring-black/5 transition duration-500 hover:-translate-y-2 hover:shadow-[0_34px_95px_rgba(47,107,79,0.18)]"
         >
           <div class="relative overflow-hidden rounded-[1.55rem]">

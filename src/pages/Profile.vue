@@ -7,13 +7,14 @@ import ProfileHero from '../components/profile/ProfileHero.vue'
 import ProfilePreferences from '../components/profile/ProfilePreferences.vue'
 import ProfileStats from '../components/profile/ProfileStats.vue'
 import TravelActivity from '../components/profile/TravelActivity.vue'
-import { destinations } from '../data/dummyData'
+import { getDestinations } from '../services/destinationService'
 
 gsap.registerPlugin(ScrollTrigger)
 
 const profileRoot = ref(null)
 const isEditing = ref(false)
 const saveMessage = ref('')
+const destinations = ref([])
 let ctx = null
 
 const profile = reactive({
@@ -26,16 +27,16 @@ const profile = reactive({
   favoriteBudget: 'Standar ke Premium',
 })
 
-const favoriteIds = [4, 1, 3]
+const favoriteIds = [1, 3, 2]
 
 const favoriteDestinations = computed(() => {
   return favoriteIds
-    .map((id) => destinations.find((item) => item.id === id))
+    .map((id) => destinations.value.find((item) => item.id === id))
     .filter(Boolean)
 })
 
 const heroImage = computed(() => {
-  return favoriteDestinations.value[2]?.image || favoriteDestinations.value[0]?.image || destinations[0]?.image
+  return favoriteDestinations.value[2]?.image || favoriteDestinations.value[0]?.image || destinations.value[0]?.image || ''
 })
 
 const heroStats = computed(() => [
@@ -205,6 +206,7 @@ function animateProfilePage() {
 }
 
 onMounted(async () => {
+  destinations.value = await getDestinations()
   await nextTick()
   animateProfilePage()
 })

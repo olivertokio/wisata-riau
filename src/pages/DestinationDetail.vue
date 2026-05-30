@@ -19,7 +19,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import DestinationGallery from '../components/detail/DestinationGallery.vue'
 import ReviewForm from '../components/forms/ReviewForm.vue'
-import { destinations } from '../data/dummyData'
+import { getDestinationWithImages, getDestinations } from '../services/destinationService'
 import { addReview, getReviewsByDestination } from '../services/reviewService'
 import {
   destinationSharesCategory,
@@ -31,6 +31,8 @@ gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
 const detailRoot = ref(null)
+const destination = ref(null)
+const allDestinations = ref([])
 const reviewItems = ref([])
 const reviewsLoading = ref(false)
 const reviewSubmitLoading = ref(false)
@@ -38,10 +40,6 @@ const reviewError = ref('')
 const reviewSuccess = ref('')
 const reviewResetToken = ref(0)
 let ctx
-
-const destination = computed(() => {
-  return destinations.find((item) => String(item.id) === String(route.params.id))
-})
 
 const destinationReviews = computed(() => reviewItems.value)
 
@@ -106,11 +104,8 @@ const experienceHighlights = computed(() => {
 })
 
 const relatedDestinations = computed(() => {
-  if (!destination.value) {
-    return []
-  }
-
-  return destinations
+  if (!destination.value) return []
+  return allDestinations.value
     .filter((item) => item.id !== destination.value.id && destinationSharesCategory(item, destination.value))
     .slice(0, 3)
 })
@@ -148,6 +143,19 @@ function reviewTimestamp() {
   return 'Baru saja'
 }
 
+async function fetchDestination() {
+  try {
+    const [dest, all] = await Promise.all([
+      getDestinationWithImages(route.params.id),
+      getDestinations(),
+    ])
+    destination.value = dest
+    allDestinations.value = all
+  } catch (err) {
+    destination.value = null
+  }
+}
+
 async function fetchReviews() {
   if (!destination.value) {
     reviewItems.value = []
@@ -161,7 +169,7 @@ async function fetchReviews() {
     const data = await getReviewsByDestination(route.params.id)
     reviewItems.value = [...data].reverse()
   } catch (error) {
-    reviewError.value = error?.response?.data?.message || 'Ulasan belum bisa dimuat saat ini. Coba beberapa saat lagi.'
+    reviewError.value = error?.message || 'Ulasan belum bisa dimuat saat ini. Coba beberapa saat lagi.'
     reviewItems.value = []
   } finally {
     reviewsLoading.value = false
@@ -179,7 +187,7 @@ async function handleReviewSubmit(payload) {
 
   try {
     const createdReview = await addReview({
-      destinationId: Number(route.params.id),
+      destination_id: Number(route.params.id),
       name: payload.name,
       rating: payload.rating,
       comment: payload.comment,
@@ -189,7 +197,7 @@ async function handleReviewSubmit(payload) {
     reviewResetToken.value += 1
     reviewSuccess.value = 'Ulasan berhasil dikirim dan langsung tampil di halaman destinasi.'
   } catch (error) {
-    reviewError.value = error?.response?.data?.message || 'Gagal mengirim ulasan. Pastikan JSON Server aktif lalu coba lagi.'
+    reviewError.value = error?.message || 'Gagal mengirim ulasan. Coba lagi.'
   } finally {
     reviewSubmitLoading.value = false
   }
@@ -280,6 +288,7 @@ function animatePage() {
 }
 
 onMounted(async () => {
+  await fetchDestination()
   await fetchReviews()
   await nextTick()
   animatePage()
@@ -289,6 +298,7 @@ watch(
   () => route.params.id,
   async () => {
     reviewSuccess.value = ''
+    await fetchDestination()
     await fetchReviews()
     await nextTick()
     animatePage()

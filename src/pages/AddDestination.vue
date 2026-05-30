@@ -17,9 +17,9 @@ async function handleAddDestination(destination) {
   try {
     await addDestination(destination)
     resetToken.value += 1
-    successMessage.value = 'Destinasi baru berhasil disimpan ke JSON Server. Kamu bisa lanjut menambahkan destinasi lain atau membuka halaman explore.'
+    successMessage.value = 'Destinasi baru berhasil disimpan ke database. Kamu bisa lanjut menambahkan destinasi lain atau membuka halaman explore.'
   } catch (error) {
-    errorMessage.value = error?.response?.data?.message || 'Gagal menyimpan destinasi. Pastikan JSON Server aktif lalu coba lagi.'
+    errorMessage.value = error?.message || 'Gagal menyimpan destinasi. Coba lagi.'
   } finally {
     isSubmitting.value = false
   }
@@ -123,7 +123,7 @@ async function handleAddDestination(destination) {
 
       <div v-if="isSubmitting" class="mt-6 inline-flex items-center gap-2 rounded-full border border-black/8 bg-soft-cream px-4 py-2 text-sm font-medium text-muted-gray">
         <LoaderCircle class="size-4 animate-spin text-nature-green" />
-        Menyimpan ke JSON Server...
+        Menyimpan ke database...
       </div>
 
       <div class="mt-6">

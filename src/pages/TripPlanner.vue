@@ -8,9 +8,8 @@ import PlannerResult from '../components/planner/PlannerResult.vue'
 import {
   accommodationRecommendations,
   culinaryRecommendations,
-  plannerFallbackDestinations,
 } from '../data/plannerData'
-import { destinations } from '../data/dummyData'
+import { getDestinations } from '../services/destinationService'
 import { destinationHasCategory, getPrimaryDestinationCategory } from '../utils/destinationCategories'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -18,12 +17,13 @@ gsap.registerPlugin(ScrollTrigger)
 const plannerRoot = ref(null)
 const resultSection = ref(null)
 const loading = ref(false)
+const destinations = ref([])
 const plannerResult = ref(null)
 let loadingTimer = null
 let ctx = null
 
 const topRatedDestinations = computed(() => {
-  return [...destinations].sort((left, right) => right.rating - left.rating)
+  return [...destinations.value].sort((left, right) => Number(right.rating || 0) - Number(left.rating || 0))
 })
 
 function normalizeArea(area) {
@@ -48,7 +48,7 @@ function locationMatchesArea(location, area) {
 
 function pickDestinations(preferences) {
   const normalizedArea = normalizeArea(preferences.area)
-  const sameCategory = destinations.filter((item) => destinationHasCategory(item, preferences.category))
+  const sameCategory = destinations.value.filter((item) => destinationHasCategory(item, preferences.category))
   const sameArea = sameCategory.filter((item) => locationMatchesArea(item.location, normalizedArea))
 
   const basePool = sameArea.length
@@ -60,12 +60,6 @@ function pickDestinations(preferences) {
   const merged = [...basePool]
 
   topRatedDestinations.value.forEach((item) => {
-    if (!merged.find((existing) => existing.id === item.id)) {
-      merged.push(item)
-    }
-  })
-
-  plannerFallbackDestinations.forEach((item) => {
     if (!merged.find((existing) => existing.id === item.id)) {
       merged.push(item)
     }
@@ -99,6 +93,10 @@ function pickStays(preferences) {
 }
 
 function createItinerary(preferences, recommendedDestinations, culinary, stays) {
+  if (!recommendedDestinations.length) {
+    return []
+  }
+
   return Array.from({ length: preferences.duration }, (_, index) => {
     const morning = recommendedDestinations[index % recommendedDestinations.length]
     const afternoon = recommendedDestinations[(index + 1) % recommendedDestinations.length]
@@ -238,6 +236,7 @@ function handleSubmit(preferences) {
 }
 
 onMounted(async () => {
+  destinations.value = await getDestinations()
   await nextTick()
   animatePage()
 })

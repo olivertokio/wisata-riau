@@ -3,7 +3,7 @@ import { ArrowLeft, ArrowRight, MapPin, Play, Star, Volume2, VolumeX } from 'luc
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { popularDestinations } from '../../data/destinations'
+import { getDestinations } from '../../services/destinationService'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -14,6 +14,7 @@ const activeIndex = ref(0)
 const isAnimating = ref(false)
 const videoFailed = ref(false)
 const isMuted = ref(true)
+const destinations = ref([])
 
 const slideDuration = 15000
 const defaultVolume = 0.3
@@ -22,10 +23,17 @@ let ctx = null
 let progressTween = null
 let isSectionVisible = false
 
-const activeDestination = computed(() => popularDestinations[activeIndex.value])
+const popularDestinations = computed(() => {
+  return [...destinations.value]
+    .sort((left, right) => Number(right.rating || 0) - Number(left.rating || 0))
+    .slice(0, 3)
+})
+const activeDestination = computed(() => popularDestinations.value[activeIndex.value] || null)
+const activeMedia = computed(() => activeDestination.value?.videoPoster || activeDestination.value?.image || activeDestination.value?.image_url || '')
+const activeVideo = computed(() => activeDestination.value?.video || '')
 
 function destinationPath(destination) {
-  return destination.detailPath || `/explore?category=${destination.category}`
+  return `/destination/${destination.id}`
 }
 
 function shouldReduceMotion() {
@@ -33,7 +41,8 @@ function shouldReduceMotion() {
 }
 
 function normalizeIndex(index) {
-  return (index + popularDestinations.length) % popularDestinations.length
+  const total = popularDestinations.value.length
+  return total ? (index + total) % total : 0
 }
 
 function animateProgress() {
@@ -57,6 +66,10 @@ function animateProgress() {
 }
 
 function startAutoPlay() {
+  if (popularDestinations.value.length <= 1) {
+    return
+  }
+
   isSectionVisible = true
   stopAutoPlay()
   animateProgress()
@@ -84,7 +97,7 @@ function restartAutoPlayIfVisible() {
 async function goToSlide(index) {
   const targetIndex = normalizeIndex(index)
 
-  if (isAnimating.value || targetIndex === activeIndex.value) {
+  if (isAnimating.value || targetIndex === activeIndex.value || !popularDestinations.value.length) {
     return
   }
 
@@ -125,9 +138,7 @@ function handleVideoError() {
 }
 
 function handleImageError(event, destination) {
-  if (event.currentTarget.src !== destination.fallbackImage) {
-    event.currentTarget.src = destination.fallbackImage
-  }
+  event.currentTarget.alt = destination?.name || 'Gambar destinasi tidak tersedia'
 }
 
 function syncVideoAudio() {
@@ -177,7 +188,8 @@ watch(activeIndex, async () => {
   restartAutoPlayIfVisible()
 })
 
-onMounted(() => {
+onMounted(async () => {
+  destinations.value = await getDestinations()
   syncVideoAudio()
 
   ctx = gsap.context(() => {
@@ -225,9 +237,12 @@ onBeforeUnmount(() => {
     class="relative isolate overflow-hidden bg-premium-white py-14 sm:py-16 lg:py-24"
     aria-labelledby="popular-slider-title"
   >
-    <div class="destination-shell relative mx-auto h-[36rem] max-w-[94rem] overflow-hidden bg-deep-charcoal shadow-[0_42px_120px_rgba(31,41,51,0.24)] ring-1 ring-black/5 sm:h-[42rem] sm:rounded-[2.5rem] lg:h-[50rem]">
+    <div
+      v-if="activeDestination"
+      class="destination-shell relative mx-auto h-[36rem] max-w-[94rem] overflow-hidden bg-deep-charcoal shadow-[0_42px_120px_rgba(31,41,51,0.24)] ring-1 ring-black/5 sm:h-[42rem] sm:rounded-[2.5rem] lg:h-[50rem]"
+    >
       <video
-        v-if="!videoFailed"
+        v-if="activeVideo && !videoFailed"
         ref="videoRef"
         class="destination-media-active absolute inset-0 h-full w-full object-cover"
         autoplay
@@ -235,19 +250,19 @@ onBeforeUnmount(() => {
         loop
         playsinline
         preload="metadata"
-        :poster="activeDestination.thumbnail"
+        :poster="activeMedia"
         :muted="isMuted"
         @error="handleVideoError"
       >
-        <source :src="activeDestination.video" type="video/mp4" @error="handleVideoError" />
+        <source :src="activeVideo" type="video/mp4" @error="handleVideoError" />
       </video>
 
       <img
-        v-else
-        :key="activeDestination.fallbackImage"
+        v-else-if="activeMedia"
+        :key="activeMedia"
         class="destination-media-active absolute inset-0 h-full w-full object-cover"
-        :src="activeDestination.thumbnail"
-        :alt="activeDestination.title"
+        :src="activeMedia"
+        :alt="activeDestination.name"
         @error="handleImageError($event, activeDestination)"
       />
 
@@ -288,7 +303,7 @@ onBeforeUnmount(() => {
               {{ activeDestination.category }}
             </p>
             <h2 id="popular-slider-title" class="planner-display text-4xl font-semibold leading-[0.98] text-white sm:text-6xl lg:text-8xl">
-              {{ activeDestination.title }}
+              {{ activeDestination.name }}
             </h2>
             <p class="mt-5 flex items-center gap-2 text-sm font-semibold text-white/78 sm:mt-6 sm:text-base">
               <MapPin class="size-5 text-soft-gold" />
@@ -319,7 +334,7 @@ onBeforeUnmount(() => {
         </div>
 
         <button
-          v-if="!videoFailed"
+          v-if="activeVideo && !videoFailed"
           class="absolute bottom-16 right-4 z-20 inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/12 px-4 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(0,0,0,0.18)] backdrop-blur-xl transition duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-deep-charcoal sm:bottom-8 sm:right-8 lg:bottom-10 lg:right-12"
           type="button"
           :aria-label="isMuted ? 'Aktifkan suara video' : 'Matikan suara video'"
@@ -358,6 +373,15 @@ onBeforeUnmount(() => {
             <ArrowRight class="size-5" />
           </button>
         </div>
+      </div>
+    </div>
+    <div
+      v-else
+      class="destination-shell relative mx-auto grid h-[24rem] max-w-[94rem] place-items-center overflow-hidden bg-deep-charcoal px-6 text-center text-white shadow-[0_42px_120px_rgba(31,41,51,0.24)] ring-1 ring-black/5 sm:rounded-[2.5rem]"
+    >
+      <div>
+        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-soft-gold">Data Supabase kosong</p>
+        <h2 class="planner-display mt-4 text-3xl font-semibold">Belum ada destinasi populer untuk ditampilkan.</h2>
       </div>
     </div>
   </section>

@@ -2,7 +2,7 @@
 import { ArrowUpRight } from 'lucide-vue-next'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { categories } from '../../data/categories'
-import { destinations } from '../../data/dummyData'
+import { getDestinations } from '../../services/destinationService'
 import { destinationHasCategory } from '../../utils/destinationCategories'
 import {
   animateCategoryHover,
@@ -11,13 +11,13 @@ import {
 } from '../../gsap/categoryAnimation'
 
 const showcaseRoot = ref(null)
+const destinations = ref([])
 let animationContext
 
 const categoriesWithCounts = computed(() => {
   return categories.map((category) => ({
     ...category,
-    // Jumlah destinasi kategori mengikuti data terbaru di src/data/dummyData.js
-    destinationCount: destinations.filter((destination) => destinationHasCategory(destination, category.name)).length,
+    destinationCount: destinations.value.filter((destination) => destinationHasCategory(destination, category.name)).length,
   }))
 })
 
@@ -39,7 +39,8 @@ function handleImageError(event, category) {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
+  destinations.value = await getDestinations()
   animationContext = createCategoryShowcaseAnimation(showcaseRoot.value)
 })
 

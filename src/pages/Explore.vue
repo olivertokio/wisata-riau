@@ -6,12 +6,13 @@ import DestinationDirectoryCard from '../components/explore/DestinationDirectory
 import ExploreFilterBar from '../components/explore/ExploreFilterBar.vue'
 import ExploreHero from '../components/explore/ExploreHero.vue'
 import FeaturedRecommendation from '../components/explore/FeaturedRecommendation.vue'
-import { destinations } from '../data/dummyData'
+import { getDestinations } from '../services/destinationService'
 import { animateExploreCards, createExploreReveal } from '../gsap/exploreReveal'
 import { destinationHasCategory, parseDestinationCategories } from '../utils/destinationCategories'
 
 const route = useRoute()
 const exploreRoot = ref(null)
+const destinations = ref([])
 const query = ref('')
 const selectedCategory = ref(route.query.category || 'Semua')
 const selectedLocation = ref('Semua')
@@ -24,15 +25,15 @@ const categories = computed(() => [
   'Semua',
   ...new Set([
     ...categoryQuickChips.slice(1),
-    ...destinations.flatMap((destination) => parseDestinationCategories(destination.category)),
+    ...destinations.value.flatMap((destination) => parseDestinationCategories(destination.category)),
   ]),
 ])
-const locations = computed(() => ['Semua', ...new Set(destinations.map((destination) => destination.location))])
+const locations = computed(() => ['Semua', ...new Set(destinations.value.map((destination) => destination.location))])
 
 const filteredDestinations = computed(() => {
   const keyword = query.value.trim().toLowerCase()
 
-  return destinations.filter((destination) => {
+  return destinations.value.filter((destination) => {
     const matchesKeyword = !keyword || [destination.name, ...parseDestinationCategories(destination.category), destination.location]
       .join(' ')
       .toLowerCase()
@@ -45,7 +46,7 @@ const filteredDestinations = computed(() => {
 })
 
 const sortedDestinations = computed(() => {
-  return [...destinations].sort((left, right) => {
+  return [...destinations.value].sort((left, right) => {
     if (right.rating !== left.rating) {
       return right.rating - left.rating
     }
@@ -58,12 +59,12 @@ const featuredDestination = computed(() => sortedDestinations.value[0] || null)
 const supportingRecommendations = computed(() => sortedDestinations.value.slice(1, 4))
 
 const averageRating = computed(() => {
-  const total = destinations.reduce((sum, destination) => sum + destination.rating, 0)
-  return destinations.length ? (total / destinations.length).toFixed(1) : '0.0'
+  const total = destinations.value.reduce((sum, destination) => sum + Number(destination.rating || 0), 0)
+  return destinations.value.length ? (total / destinations.value.length).toFixed(1) : '0.0'
 })
 
 const heroStats = computed(() => ({
-  totalDestinations: destinations.length,
+  totalDestinations: destinations.value.length,
   totalCategories: categories.value.length - 1,
   averageRating: averageRating.value,
 }))
@@ -80,6 +81,7 @@ function animateCards() {
 }
 
 onMounted(async () => {
+  destinations.value = await getDestinations()
   revealContext = createExploreReveal(exploreRoot.value)
   await nextTick()
   animateCards()

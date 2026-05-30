@@ -9,9 +9,7 @@ defineProps({
 })
 
 function handleImageError(event, destination) {
-  if (event.currentTarget.src !== destination.fallbackImage) {
-    event.currentTarget.src = destination.fallbackImage
-  }
+  event.currentTarget.alt = destination.name || 'Gambar destinasi tidak tersedia'
 }
 </script>
 
@@ -21,7 +19,7 @@ function handleImageError(event, destination) {
       <img
         class="h-full w-full object-cover"
         :src="destination.image"
-        :alt="destination.title"
+        :alt="destination.name"
         @error="handleImageError($event, destination)"
       />
       <div class="absolute inset-0 bg-gradient-to-t from-black/58 to-transparent"></div>
@@ -32,7 +30,7 @@ function handleImageError(event, destination) {
 
     <div class="p-4">
       <div class="flex items-start justify-between gap-3">
-        <h3 class="planner-display text-xl font-semibold leading-tight">{{ destination.title }}</h3>
+        <h3 class="planner-display text-xl font-semibold leading-tight">{{ destination.name }}</h3>
         <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-soft-cream px-2.5 py-1 text-sm font-semibold text-soft-gold">
           <Star class="size-3.5 fill-soft-gold" />
           {{ destination.rating }}
@@ -49,7 +47,7 @@ function handleImageError(event, destination) {
 
       <RouterLink
         class="mt-4 inline-flex items-center gap-2 rounded-full bg-deep-charcoal px-4 py-2.5 text-sm font-semibold text-white transition duration-300 hover:bg-nature-green"
-        :to="destination.detailPath"
+        :to="`/destination/${destination.id}`"
       >
         Detail
         <ArrowRight class="size-4" />

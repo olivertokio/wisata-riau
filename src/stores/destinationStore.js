@@ -1,10 +1,9 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { destinations as dummyDestinations } from '../data/dummyData'
 import { getDestinations } from '../services/destinationService'
 
 export const useDestinationStore = defineStore('destinations', () => {
-  const destinations = ref([...dummyDestinations])
+  const destinations = ref([])
   const isLoading = ref(false)
   const error = ref(null)
 
@@ -36,4 +35,3 @@ export const useDestinationStore = defineStore('destinations', () => {
     addDestination,
   }
 })
-
