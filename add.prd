@@ -1,0 +1,343 @@
+# RiauScape Authentication & Access Control PRD
+
+## Objective
+
+Implementasikan sistem autentikasi pengguna menggunakan Supabase Auth agar fitur tertentu hanya dapat digunakan oleh pengguna yang telah login.
+
+Website tetap dapat diakses publik untuk eksplorasi wisata, namun fitur interaktif dan personal harus memerlukan akun.
+
+---
+
+# Authentication
+
+Gunakan:
+
+* Supabase Auth
+* Email & Password Authentication
+
+Buat halaman:
+
+* /login
+* /register
+
+Folder:
+
+src/pages/auth/
+
+* Login.vue
+* Register.vue
+
+Service:
+
+src/services/authService.js
+
+Functions:
+
+* registerUser()
+* loginUser()
+* logoutUser()
+* getCurrentUser()
+* isAuthenticated()
+
+---
+
+# Navbar Behaviour
+
+## Sebelum Login
+
+Navbar:
+
+* Home
+* Explore
+* Login
+
+Jangan tampilkan:
+
+* Profil
+* Trip Planner
+* Dashboard Admin
+
+Button CTA Hero:
+
+Ubah:
+
+"Jelajahi Sekarang"
+
+menjadi:
+
+"Login Sekarang"
+
+Arahkan ke:
+
+/login
+
+---
+
+## Setelah Login
+
+Navbar:
+
+* Home
+* Explore
+* Trip Planner
+* Profil
+
+Button CTA Hero:
+
+Ubah:
+
+"Login Sekarang"
+
+menjadi:
+
+"Jelajahi Sekarang"
+
+Arahkan ke:
+
+/explore
+
+---
+
+# Protected Features
+
+Fitur berikut hanya dapat digunakan jika user sudah login:
+
+## Review
+
+Halaman:
+
+/destination/:id
+
+Jika user belum login:
+
+* Form review disembunyikan
+* Tampilkan card:
+
+"Login terlebih dahulu untuk memberikan ulasan."
+
+Button:
+
+Login
+
+Arahkan ke:
+
+/login
+
+---
+
+## Trip Planner
+
+Halaman:
+
+/trip-planner
+
+Jika belum login:
+
+* Jangan tampilkan form planner
+* Tampilkan empty state:
+
+"Login terlebih dahulu untuk membuat rencana perjalanan."
+
+Button:
+
+Login
+
+---
+
+## Favorites
+
+Jika user belum login:
+
+Saat klik tombol favorit:
+
+* Jangan simpan data
+* Tampilkan modal login required
+
+---
+
+# Profile Page
+
+Route:
+
+/profile
+
+Jika belum login:
+
+Redirect:
+
+/login
+
+Jika login:
+
+Tampilkan:
+
+* Nama
+* Email
+* Jumlah review
+* Jumlah trip planner
+* Destinasi favorit
+
+Button:
+
+Logout
+
+---
+
+# Route Guard
+
+Gunakan Vue Router Navigation Guard.
+
+Protected Routes:
+
+* /profile
+* /trip-planner
+* /favorites
+
+Pseudo Logic:
+
+if (!user && protectedRoute) {
+return '/login'
+}
+
+---
+
+# User Session
+
+Saat refresh:
+
+* Session tetap tersimpan
+* User tetap login
+
+Gunakan:
+
+supabase.auth.getSession()
+
+dan
+
+supabase.auth.onAuthStateChange()
+
+---
+
+# Database
+
+Buat tabel:
+
+profiles
+
+Fields:
+
+* id
+* email
+* full_name
+* avatar_url
+* role
+* created_at
+
+Role default:
+
+user
+
+Role admin:
+
+admin
+
+---
+
+# Review Integration
+
+Saat user membuat review:
+
+Simpan:
+
+* destination_id
+* user_id
+* rating
+* comment
+
+Jangan lagi menggunakan field:
+
+name
+
+Karena nama diambil dari profile user.
+
+---
+
+# Trip Planner Integration
+
+Saat user membuat itinerary:
+
+Simpan:
+
+* user_id
+* trip_type
+* duration
+* start_date
+* category
+* accommodation
+* created_at
+
+Trip planner harus terhubung ke user yang sedang login.
+
+---
+
+# Admin Access
+
+Route:
+
+/admin
+
+Hanya user dengan role:
+
+admin
+
+Jika role bukan admin:
+
+Redirect ke homepage.
+
+Pseudo Logic:
+
+if (user.role !== 'admin') {
+return '/'
+}
+
+---
+
+# UI Requirements
+
+Guest User:
+
+* Bisa melihat Home
+* Bisa melihat Explore
+* Bisa melihat Detail Destinasi
+
+Authenticated User:
+
+* Bisa membuat review
+* Bisa membuat Trip Planner
+* Bisa menyimpan favorit
+* Bisa mengakses profile
+
+Admin:
+
+* Semua akses user
+* Dashboard Admin
+* CRUD Destinasi
+* CRUD Review
+* CRUD Gallery
+* CRUD Users
+
+---
+
+# Expected Result
+
+Guest:
+
+* Eksplorasi wisata tanpa akun
+
+User:
+
+* Pengalaman personal dan interaktif
+
+Admin:
+
+* Mengelola seluruh konten RiauScape melalui dashboard

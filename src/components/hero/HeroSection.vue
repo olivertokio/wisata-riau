@@ -5,6 +5,7 @@ import { Observer } from 'gsap/Observer'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { getDestinations } from '../../services/destinationService'
+import { useUserStore } from '../../stores/userStore'
 
 gsap.registerPlugin(ScrollTrigger, Observer)
 
@@ -12,6 +13,7 @@ const heroRoot = ref(null)
 const heroImage = ref(null)
 const floatingLayer = ref(null)
 const destinations = ref([])
+const userStore = useUserStore()
 
 const featuredDestination = computed(() => destinations.value[0] || null)
 const floatingDestinations = computed(() => destinations.value.slice(1, 3))
@@ -19,11 +21,14 @@ const averageRating = computed(() => {
   const total = destinations.value.reduce((sum, destination) => sum + Number(destination.rating || 0), 0)
   return destinations.value.length ? (total / destinations.value.length).toFixed(1) : '0.0'
 })
+const primaryCtaLabel = computed(() => (userStore.isAuthenticated ? 'Jelajahi Sekarang' : 'Login Sekarang'))
+const primaryCtaLink = computed(() => (userStore.isAuthenticated ? '/explore' : '/login'))
 
 let observer
 let context
 
 onMounted(async () => {
+  userStore.initialize()
   destinations.value = await getDestinations()
 
   context = gsap.context(() => {
@@ -129,9 +134,9 @@ onBeforeUnmount(() => {
         <div class="hero-copy-item mt-8 flex flex-col gap-3 sm:flex-row">
           <RouterLink
             class="group inline-flex items-center justify-center gap-2 rounded-full bg-nature-green px-6 py-3.5 font-semibold text-white shadow-2xl shadow-green-900/15 transition duration-300 hover:-translate-y-0.5 hover:bg-deep-charcoal"
-            to="/explore"
+            :to="primaryCtaLink"
           >
-            Jelajahi Destinasi
+            {{ primaryCtaLabel }}
             <ArrowRight class="size-4 transition duration-300 group-hover:translate-x-1" />
           </RouterLink>
 

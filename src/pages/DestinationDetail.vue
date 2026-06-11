@@ -20,7 +20,9 @@ import { useRoute } from 'vue-router'
 import DestinationGallery from '../components/detail/DestinationGallery.vue'
 import ReviewForm from '../components/forms/ReviewForm.vue'
 import { getDestinationWithImages, getDestinations } from '../services/destinationService'
+import { getFavoriteIdsByUser, toggleFavorite as toggleFavoriteRecord } from '../services/favoriteService'
 import { addReview, getReviewsByDestination } from '../services/reviewService'
+import { useUserStore } from '../stores/userStore'
 import {
   destinationSharesCategory,
   formatDestinationCategories,
@@ -30,6 +32,7 @@ import {
 gsap.registerPlugin(ScrollTrigger)
 
 const route = useRoute()
+const userStore = useUserStore()
 const detailRoot = ref(null)
 const destination = ref(null)
 const allDestinations = ref([])
@@ -39,9 +42,17 @@ const reviewSubmitLoading = ref(false)
 const reviewError = ref('')
 const reviewSuccess = ref('')
 const reviewResetToken = ref(0)
+const favoriteIds = ref([])
+const favoriteLoading = ref(false)
+const showLoginRequired = ref(false)
 let ctx
 
 const destinationReviews = computed(() => reviewItems.value)
+const isLoggedIn = computed(() => userStore.isAuthenticated)
+const isFavorite = computed(() => {
+  if (!destination.value) return false
+  return favoriteIds.value.some((id) => String(id) === String(destination.value.id))
+})
 
 const hasCoordinates = computed(() => {
   return destination.value?.latitude != null && destination.value?.longitude != null
@@ -177,7 +188,8 @@ async function fetchReviews() {
 }
 
 async function handleReviewSubmit(payload) {
-  if (!destination.value) {
+  if (!destination.value || !userStore.user?.id) {
+    reviewError.value = 'Login terlebih dahulu untuk memberikan ulasan.'
     return
   }
 
@@ -188,6 +200,7 @@ async function handleReviewSubmit(payload) {
   try {
     const createdReview = await addReview({
       destination_id: Number(route.params.id),
+      user_id: userStore.user.id,
       name: payload.name,
       rating: payload.rating,
       comment: payload.comment,
@@ -220,6 +233,39 @@ function shareDestination() {
   }
 
   navigator.clipboard?.writeText(window.location.href).catch(() => {})
+}
+
+async function loadFavorites() {
+  if (!userStore.user?.id) {
+    favoriteIds.value = []
+    return
+  }
+
+  try {
+    favoriteIds.value = await getFavoriteIdsByUser(userStore.user.id)
+  } catch {
+    favoriteIds.value = []
+  }
+}
+
+async function toggleFavorite() {
+  if (!userStore.isAuthenticated) {
+    showLoginRequired.value = true
+    return
+  }
+
+  const destinationId = destination.value?.id
+  if (!destinationId || favoriteLoading.value) return
+
+  favoriteLoading.value = true
+  try {
+    const nextFavoriteState = await toggleFavoriteRecord(userStore.user.id, destinationId, isFavorite.value)
+    favoriteIds.value = nextFavoriteState
+      ? [...favoriteIds.value, destinationId]
+      : favoriteIds.value.filter((id) => String(id) !== String(destinationId))
+  } finally {
+    favoriteLoading.value = false
+  }
 }
 
 function animatePage() {
@@ -288,6 +334,8 @@ function animatePage() {
 }
 
 onMounted(async () => {
+  await userStore.initialize()
+  await loadFavorites()
   await fetchDestination()
   await fetchReviews()
   await nextTick()
@@ -398,6 +446,16 @@ onBeforeUnmount(() => {
               >
                 <Share2 class="size-4" />
                 Bagikan Destinasi
+              </button>
+
+              <button
+                class="inline-flex items-center gap-2 rounded-full border border-white/18 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur-xl transition duration-300 hover:bg-white hover:text-deep-charcoal"
+                type="button"
+                :disabled="favoriteLoading"
+                @click="toggleFavorite"
+              >
+                <Heart class="size-4" :class="isFavorite ? 'fill-soft-gold text-soft-gold' : ''" />
+                {{ isFavorite ? 'Favorit Tersimpan' : 'Simpan Favorit' }}
               </button>
             </div>
           </div>
@@ -517,6 +575,16 @@ onBeforeUnmount(() => {
                 <Send class="size-4" />
                 Bagikan Destinasi
               </button>
+
+              <button
+                class="inline-flex items-center justify-center gap-2 rounded-full border border-black/8 bg-white px-5 py-3 text-sm font-semibold text-deep-charcoal transition duration-300 hover:-translate-y-0.5 hover:border-soft-gold/40 hover:bg-soft-cream"
+                type="button"
+                :disabled="favoriteLoading"
+                @click="toggleFavorite"
+              >
+                <Heart class="size-4" :class="isFavorite ? 'fill-soft-gold text-soft-gold' : ''" />
+                {{ isFavorite ? 'Favorit Tersimpan' : 'Simpan Favorit' }}
+              </button>
             </div>
           </div>
         </aside>
@@ -624,11 +692,28 @@ onBeforeUnmount(() => {
           </Transition>
 
           <ReviewForm
+            v-if="isLoggedIn"
             class="mt-8"
             :loading="reviewSubmitLoading"
             :reset-token="reviewResetToken"
             @submit="handleReviewSubmit"
           />
+
+          <div
+            v-else
+            class="mt-8 rounded-[1.6rem] border border-black/8 bg-soft-cream p-5"
+          >
+            <p class="font-semibold text-deep-charcoal">Login terlebih dahulu untuk memberikan ulasan.</p>
+            <p class="mt-2 text-sm leading-7 text-muted-gray">
+              Akun diperlukan agar ulasan terhubung ke profil pengguna.
+            </p>
+            <RouterLink
+              class="mt-4 inline-flex rounded-full bg-nature-green px-5 py-3 text-sm font-semibold text-white transition hover:bg-deep-charcoal"
+              :to="{ name: 'login', query: { redirect: route.fullPath } }"
+            >
+              Login
+            </RouterLink>
+          </div>
         </div>
 
         <div
@@ -781,6 +866,28 @@ onBeforeUnmount(() => {
       </RouterLink>
     </div>
   </section>
+
+  <Teleport to="body">
+    <div v-if="showLoginRequired" class="fixed inset-0 z-[70] grid place-items-center bg-deep-charcoal/40 px-4">
+      <section class="w-full max-w-md rounded-[1.5rem] bg-white p-6 shadow-2xl">
+        <div class="grid size-12 place-items-center rounded-full bg-soft-cream text-nature-green">
+          <Heart class="size-5" />
+        </div>
+        <h2 class="mt-5 text-xl font-semibold text-deep-charcoal">Login diperlukan</h2>
+        <p class="mt-2 text-sm leading-7 text-muted-gray">
+          Login terlebih dahulu untuk menyimpan destinasi favorit ke koleksi personal.
+        </p>
+        <div class="mt-6 flex justify-end gap-3">
+          <button class="rounded-full border border-black/10 px-5 py-2.5 text-sm font-semibold text-muted-gray" type="button" @click="showLoginRequired = false">
+            Batal
+          </button>
+          <RouterLink class="rounded-full bg-nature-green px-5 py-2.5 text-sm font-semibold text-white" :to="{ name: 'login', query: { redirect: route.fullPath } }" @click="showLoginRequired = false">
+            Login
+          </RouterLink>
+        </div>
+      </section>
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>

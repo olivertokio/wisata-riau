@@ -1,0 +1,387 @@
+# ADMIN PRD – RiauScape Management Dashboard
+
+## Project Overview
+
+RiauScape merupakan platform pariwisata digital Provinsi Riau yang menyediakan fitur eksplorasi destinasi wisata, Trip Planner, ulasan pengguna, galeri visual, dan peta wisata digital.
+
+Untuk mendukung pengelolaan data secara terpusat, diperlukan Dashboard Admin yang memungkinkan administrator mengelola seluruh konten website tanpa harus mengakses database secara langsung.
+
+Dashboard Admin harus memiliki tampilan profesional, modern, dan mudah digunakan dengan fokus pada pengelolaan data wisata.
+
+---
+
+# Goals
+
+Dashboard Admin bertujuan untuk:
+
+* Mengelola data destinasi wisata.
+* Mengelola kategori wisata.
+* Mengelola ulasan pengguna.
+* Mengelola aset gambar wisata.
+* Mengelola data pengguna.
+* Mengelola data Trip Planner.
+* Menjadi pusat kontrol seluruh konten website RiauScape.
+
+---
+
+# Tech Stack
+
+Frontend:
+
+* Vue 3
+* Composition API
+* Vue Router
+* Tailwind CSS
+
+Backend:
+
+* Supabase
+
+Storage:
+
+* Cloudinary
+
+Animation:
+
+* Minimal GSAP (hanya micro interaction)
+
+---
+
+# Route Structure
+
+Admin route harus terpisah dari website utama.
+
+Routes:
+
+/admin
+
+/admin/destinations
+
+/admin/categories
+
+/admin/reviews
+
+/admin/users
+
+/admin/trip-plans
+
+/admin/gallery
+
+/admin/chat
+
+/admin/settings
+
+---
+
+# Folder Structure
+
+src/
+
+├── layouts/
+
+│ ├── MainLayout.vue
+
+│ └── AdminLayout.vue
+
+│
+
+├── pages/
+
+│ ├── Home.vue
+
+│ ├── Explore.vue
+
+│ ├── DestinationDetail.vue
+
+│ ├── Profile.vue
+
+│ │
+
+│ └── admin/
+
+│ ├── Dashboard.vue
+
+│ ├── Destinations.vue
+
+│ ├── Categories.vue
+
+│ ├── Reviews.vue
+
+│ ├── Users.vue
+
+│ ├── TripPlans.vue
+
+│ ├── Gallery.vue
+
+│ ├── Chat.vue
+
+│ └── Settings.vue
+
+│
+
+├── components/
+
+│ └── admin/
+
+│ ├── Sidebar.vue
+
+│ ├── Topbar.vue
+
+│ ├── StatsCard.vue
+
+│ ├── DataTable.vue
+
+│ ├── ModalForm.vue
+
+│ └── ConfirmDelete.vue
+
+│
+
+├── services/
+
+│ ├── supabase.js
+
+│ └── adminService.js
+
+---
+
+# Dashboard Overview
+
+Halaman:
+
+/admin
+
+Tampilkan statistik:
+
+* Total Destinasi
+* Total Kategori
+* Total Ulasan
+* Total Pengguna
+* Total Trip Planner
+
+Tambahkan:
+
+* Destinasi terbaru
+* Ulasan terbaru
+* Aktivitas admin
+* Grafik jumlah destinasi per kategori
+
+Layout:
+
+* Sidebar kiri
+* Topbar atas
+* Grid cards
+* Table overview
+
+---
+
+# Destinations Management
+
+Halaman:
+
+/admin/destinations
+
+Admin dapat:
+
+* Melihat semua destinasi
+* Menambah destinasi
+* Mengedit destinasi
+* Menghapus destinasi
+
+Field:
+
+* name
+* slug
+* category_id
+* location
+* description
+* image
+* latitude
+* longitude
+* rating
+* views
+
+Tabel:
+
+Thumbnail | Nama | Kategori | Lokasi | Rating | Views | Action
+
+Action:
+
+* Edit
+* Delete
+
+Upload gambar:
+
+Cloudinary
+
+Simpan URL gambar ke Supabase.
+
+---
+
+# Categories Management
+
+Halaman:
+
+/admin/categories
+
+CRUD kategori.
+
+Field:
+
+* name
+* icon
+
+Action:
+
+* Tambah
+* Edit
+* Hapus
+
+---
+
+# Reviews Management
+
+Halaman:
+
+/admin/reviews
+
+Menampilkan:
+
+* Nama pengguna
+* Destinasi
+* Rating
+* Komentar
+* Tanggal
+
+Action:
+
+* Hapus ulasan
+* Filter rating
+
+---
+
+# Users Management
+
+Halaman:
+
+/admin/users
+
+Menampilkan:
+
+* Nama
+* Email
+* Role
+* Join Date
+
+Action:
+
+* View
+* Suspend
+* Delete
+
+---
+
+# Trip Planner Management
+
+Halaman:
+
+/admin/trip-plans
+
+Menampilkan:
+
+* Nama pengguna
+* Tanggal perjalanan
+* Durasi
+* Jumlah destinasi
+
+Action:
+
+* View itinerary
+* Delete
+
+---
+
+# Gallery Management
+
+Halaman:
+
+/admin/gallery
+
+Data berasal dari Cloudinary.
+
+Fitur:
+
+* Upload gambar
+* Hapus gambar
+* Preview gambar
+* Assign gambar ke destinasi
+
+---
+
+# Customer Service Chat
+
+Halaman:
+
+/admin/chat
+
+Tahap awal:
+
+* Dummy inbox
+
+Tahap berikutnya:
+
+* Live chat customer service
+* Riwayat percakapan
+* Status online/offline admin
+
+---
+
+# Authentication
+
+Admin wajib login.
+
+Role:
+
+admin
+
+Fitur:
+
+* Login
+* Logout
+* Route protection
+
+Jika bukan admin:
+
+Redirect ke homepage.
+
+---
+
+# Design System
+
+Theme:
+
+* White Premium
+* Soft Cream
+* Dark Green
+* Soft Gold Accent
+
+Karakter:
+
+* Clean
+* Professional
+* Enterprise Dashboard
+* Tidak menggunakan efek cinematic berlebihan
+
+Dashboard harus terasa seperti CMS modern dan mudah digunakan oleh administrator wisata Riau.
+
+---
+
+# Success Criteria
+
+Dashboard dianggap berhasil apabila:
+
+* Admin dapat mengelola seluruh data wisata tanpa akses langsung ke database.
+* Data yang diubah langsung tampil pada website pengguna.
+* Upload gambar berhasil tersimpan di Cloudinary.
+* Seluruh CRUD berjalan menggunakan Supabase.
+* Dashboard responsif pada desktop dan tablet.

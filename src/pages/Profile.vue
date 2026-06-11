@@ -1,5 +1,6 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import FavoriteDestinations from '../components/profile/FavoriteDestinations.vue'
@@ -8,6 +9,10 @@ import ProfilePreferences from '../components/profile/ProfilePreferences.vue'
 import ProfileStats from '../components/profile/ProfileStats.vue'
 import TravelActivity from '../components/profile/TravelActivity.vue'
 import { getDestinations } from '../services/destinationService'
+import { getFavoriteIdsByUser } from '../services/favoriteService'
+import { getTripPlansByUser } from '../services/tripPlanService'
+import { requireSupabase } from '../services/supabase'
+import { useUserStore } from '../stores/userStore'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -15,23 +20,25 @@ const profileRoot = ref(null)
 const isEditing = ref(false)
 const saveMessage = ref('')
 const destinations = ref([])
+const router = useRouter()
+const userStore = useUserStore()
 let ctx = null
 
 const profile = reactive({
-  name: 'Shandi Reskiawan',
-  email: 'shandi@eksplorasiriau.id',
+  name: 'Pengguna RiauScape',
+  email: '',
   tagline: 'Menjelajahi Riau melalui pengalaman dan cerita.',
-  totalReviews: 8,
-  plannedTrips: 5,
-  favoriteCategory: 'Sejarah & Budaya',
-  favoriteBudget: 'Standar ke Premium',
+  totalReviews: 0,
+  plannedTrips: 0,
+  favoriteCategory: 'Wisata Riau',
+  favoriteBudget: 'Standar',
 })
 
-const favoriteIds = [1, 3, 2]
+const favoriteIds = ref([])
 
 const favoriteDestinations = computed(() => {
-  return favoriteIds
-    .map((id) => destinations.value.find((item) => item.id === id))
+  return favoriteIds.value
+    .map((id) => destinations.value.find((item) => String(item.id) === String(id)))
     .filter(Boolean)
 })
 
@@ -72,26 +79,26 @@ const summaryCards = computed(() => [
   },
 ])
 
-const activities = [
+const activities = computed(() => [
   {
     type: 'Ulasan',
-    title: 'Mengulas Istana Siak Sri Indrapura',
-    description: 'Membagikan cerita tentang arsitektur istana, suasana heritage, dan pengalaman berjalan di kompleks Kesultanan Siak.',
-    date: '2 hari lalu',
+    title: `${profile.totalReviews} ulasan aktif`,
+    description: 'Jumlah ulasan yang tersimpan dan terhubung dengan akun ini.',
+    date: 'Akun saat ini',
   },
   {
     type: 'Favorit',
-    title: 'Menyimpan Pulau Jemur ke koleksi personal',
-    description: 'Menandai destinasi bahari ini sebagai pilihan utama untuk perjalanan santai dengan fokus lanskap pesisir Riau.',
-    date: 'Minggu ini',
+    title: `${favoriteDestinations.value.length} destinasi favorit`,
+    description: 'Destinasi yang tersimpan sebagai inspirasi perjalanan berikutnya.',
+    date: 'Koleksi personal',
   },
   {
     type: 'Planner',
-    title: 'Membuat itinerary eksplorasi Kampar',
-    description: 'Menyusun rencana multi-hari yang menggabungkan Ulu Kasok, Candi Muara Takus, dan wisata kuliner lokal.',
-    date: 'Bulan ini',
+    title: `${profile.plannedTrips} trip planner`,
+    description: 'Rencana perjalanan yang dibuat melalui fitur Trip Planner.',
+    date: 'Riwayat akun',
   },
-]
+])
 
 const preferences = {
   categories: ['Alam', 'Budaya Melayu', 'Kuliner'],
@@ -115,6 +122,42 @@ function handleSave() {
   window.setTimeout(() => {
     saveMessage.value = ''
   }, 2400)
+}
+
+async function loadProfileStats() {
+  if (!userStore.user?.id) return
+
+  profile.name = userStore.user.full_name || userStore.user.name || 'Pengguna RiauScape'
+  profile.email = userStore.user.email || ''
+
+  try {
+    const supabase = requireSupabase()
+    const { count } = await supabase
+      .from('reviews')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userStore.user.id)
+    profile.totalReviews = count || 0
+  } catch {
+    profile.totalReviews = 0
+  }
+
+  try {
+    const trips = await getTripPlansByUser(userStore.user.id)
+    profile.plannedTrips = trips.length
+  } catch {
+    profile.plannedTrips = 0
+  }
+
+  try {
+    favoriteIds.value = await getFavoriteIdsByUser(userStore.user.id)
+  } catch {
+    favoriteIds.value = []
+  }
+}
+
+async function handleLogout() {
+  await userStore.logout()
+  router.push('/')
 }
 
 function animateProfilePage() {
@@ -206,7 +249,9 @@ function animateProfilePage() {
 }
 
 onMounted(async () => {
+  await userStore.initialize()
   destinations.value = await getDestinations()
+  await loadProfileStats()
   await nextTick()
   animateProfilePage()
 })
@@ -251,6 +296,16 @@ onBeforeUnmount(() => {
       </Transition>
 
       <ProfileStats :items="summaryCards" />
+
+      <div class="flex justify-end">
+        <button
+          class="rounded-full bg-deep-charcoal px-5 py-3 text-sm font-semibold text-white transition hover:bg-nature-green"
+          type="button"
+          @click="handleLogout"
+        >
+          Logout
+        </button>
+      </div>
 
       <FavoriteDestinations :destinations="favoriteDestinations" />
 

@@ -2,22 +2,43 @@
 import { Menu, X } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { Observer } from 'gsap/Observer'
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '../../stores/userStore'
 
 gsap.registerPlugin(Observer)
 
 const route = useRoute()
+const userStore = useUserStore()
 const isOpen = ref(false)
 const navRoot = ref(null)
 let observer
 
-const navItems = [
-  { label: 'Home', to: '/' },
-  { label: 'Explore', to: '/explore' },
-  { label: 'Rencana Perjalanan', to: '/trip-planner' },
-  { label: 'Profil', to: '/profile' },
-]
+const navItems = computed(() => {
+  const items = [
+    { label: 'Home', to: '/' },
+    { label: 'Explore', to: '/explore' },
+  ]
+
+  if (userStore.isAuthenticated) {
+    items.push(
+      { label: 'Rencana Perjalanan', to: '/trip-planner' },
+      { label: 'Favorit', to: '/favorites' },
+      { label: 'Profil', to: '/profile' },
+    )
+
+    if (userStore.isAdmin) {
+      items.push({ label: 'Dashboard Admin', to: '/admin' })
+    }
+  } else {
+    items.push({ label: 'Login', to: '/login' })
+  }
+
+  return items
+})
+
+const ctaLink = computed(() => (userStore.isAuthenticated ? '/explore' : '/login'))
+const ctaLabel = computed(() => (userStore.isAuthenticated ? 'Jelajahi Sekarang' : 'Login Sekarang'))
 
 function closeMenu() {
   isOpen.value = false
@@ -33,6 +54,8 @@ watch(
 )
 
 onMounted(() => {
+  userStore.initialize()
+
   gsap.from(navRoot.value, {
     y: -18,
     opacity: 0,
@@ -85,10 +108,10 @@ onBeforeUnmount(() => {
 
       <div class="flex items-center gap-3">
         <RouterLink
-          to="/explore"
+          :to="ctaLink"
           class="hidden rounded-[0.9rem] bg-[#31553D] px-7 py-4 text-lg font-semibold text-white shadow-[0_10px_24px_rgba(23,54,38,0.16)] transition duration-300 hover:bg-[#173626] lg:inline-flex"
         >
-          Jelajahi Sekarang
+          {{ ctaLabel }}
         </RouterLink>
 
         <button
@@ -129,9 +152,9 @@ onBeforeUnmount(() => {
           </RouterLink>
           <RouterLink
             class="mt-2 rounded-2xl bg-[#31553D] px-4 py-3 text-center text-white transition hover:bg-[#173626]"
-            to="/explore"
+            :to="ctaLink"
           >
-            Jelajahi Sekarang
+            {{ ctaLabel }}
           </RouterLink>
         </nav>
       </div>

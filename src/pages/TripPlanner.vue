@@ -1,5 +1,5 @@
 <script setup>
-import { LoaderCircle } from 'lucide-vue-next'
+import { LoaderCircle, LogIn } from 'lucide-vue-next'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
@@ -10,6 +10,8 @@ import {
   culinaryRecommendations,
 } from '../data/plannerData'
 import { getDestinations } from '../services/destinationService'
+import { createUserTripPlan } from '../services/tripPlanService'
+import { useUserStore } from '../stores/userStore'
 import { destinationHasCategory, getPrimaryDestinationCategory } from '../utils/destinationCategories'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -19,6 +21,8 @@ const resultSection = ref(null)
 const loading = ref(false)
 const destinations = ref([])
 const plannerResult = ref(null)
+const plannerError = ref('')
+const userStore = useUserStore()
 let loadingTimer = null
 let ctx = null
 
@@ -222,20 +226,33 @@ async function scrollToResult() {
 }
 
 function handleSubmit(preferences) {
+  if (!userStore.user?.id) {
+    plannerError.value = 'Login terlebih dahulu untuk membuat rencana perjalanan.'
+    return
+  }
+
   loading.value = true
+  plannerError.value = ''
   plannerResult.value = null
   window.clearTimeout(loadingTimer)
 
   loadingTimer = window.setTimeout(async () => {
-    plannerResult.value = generatePlannerResult(preferences)
-    loading.value = false
-    await nextTick()
-    animatePage()
-    scrollToResult()
+    try {
+      await createUserTripPlan(userStore.user.id, preferences)
+      plannerResult.value = generatePlannerResult(preferences)
+      await nextTick()
+      animatePage()
+      scrollToResult()
+    } catch (error) {
+      plannerError.value = error?.message || 'Gagal menyimpan rencana perjalanan.'
+    } finally {
+      loading.value = false
+    }
   }, 1500)
 }
 
 onMounted(async () => {
+  await userStore.initialize()
   destinations.value = await getDestinations()
   await nextTick()
   animatePage()
@@ -260,7 +277,32 @@ onBeforeUnmount(() => {
     <div class="pointer-events-none absolute inset-x-0 top-0 h-[28rem] bg-[radial-gradient(circle_at_top_right,rgba(201,162,39,0.08),transparent_22%),radial-gradient(circle_at_top_left,rgba(47,107,79,0.08),transparent_24%)]"></div>
 
     <div class="relative">
-      <PlannerForm :loading="loading" @submit="handleSubmit" />
+      <template v-if="userStore.isAuthenticated">
+        <PlannerForm :loading="loading" @submit="handleSubmit" />
+      </template>
+
+      <div
+        v-else
+        class="planner-sans mx-auto grid min-h-[calc(100vh-6.5rem)] max-w-2xl place-items-center px-4 py-16 text-center"
+      >
+        <div class="rounded-[2rem] border border-black/10 bg-white p-8 shadow-[0_24px_70px_rgba(31,41,51,0.08)]">
+          <div class="mx-auto grid size-14 place-items-center rounded-full bg-soft-cream text-nature-green">
+            <LogIn class="size-6" />
+          </div>
+          <h1 class="planner-display mt-5 text-3xl font-semibold text-deep-charcoal">Login terlebih dahulu untuk membuat rencana perjalanan.</h1>
+          <p class="mt-3 leading-7 text-muted-gray">Trip Planner akan menyimpan itinerary ke akun pengguna yang sedang login.</p>
+          <RouterLink class="mt-6 inline-flex rounded-full bg-nature-green px-6 py-3 font-semibold text-white transition hover:bg-deep-charcoal" :to="{ name: 'login', query: { redirect: '/trip-planner' } }">
+            Login
+          </RouterLink>
+        </div>
+      </div>
+
+      <div
+        v-if="plannerError"
+        class="planner-sans mx-auto mt-6 max-w-2xl rounded-[1.3rem] border border-red-200 bg-red-50 p-4 text-center text-sm font-semibold text-red-700"
+      >
+        {{ plannerError }}
+      </div>
 
       <Transition
         enter-active-class="transition duration-300 ease-out"
