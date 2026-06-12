@@ -12,6 +12,13 @@ import {
   Users,
   X,
 } from 'lucide-vue-next'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
+import {
+  getAdminConversations,
+  subscribeToCustomerMessages,
+  unsubscribeChannel,
+} from '../../services/customerServiceChatService'
+import { hasSupabaseConfig } from '../../services/supabase'
 
 defineProps({
   open: {
@@ -22,6 +29,9 @@ defineProps({
 
 defineEmits(['close'])
 
+const unreadCount = ref(0)
+let sidebarChannel = null
+
 const navigation = [
   { label: 'Dashboard', to: '/admin', icon: BarChart3 },
   { label: 'Destinations', to: '/admin/destinations', icon: MapPinned },
@@ -30,9 +40,37 @@ const navigation = [
   { label: 'Users', to: '/admin/users', icon: Users },
   { label: 'Trip Plans', to: '/admin/trip-plans', icon: Home },
   { label: 'Gallery', to: '/admin/gallery', icon: Images },
-  { label: 'Chat', to: '/admin/chat', icon: MessageCircle },
+  { label: 'Customer Service', to: '/admin/customer-service', icon: MessageCircle },
   { label: 'Settings', to: '/admin/settings', icon: Settings },
 ]
+
+async function loadUnreadCount() {
+  try {
+    const conversations = await getAdminConversations()
+    unreadCount.value = conversations.reduce((total, conversation) => (
+      total + Number(conversation.unread_count || 0)
+    ), 0)
+  } catch {
+    unreadCount.value = 0
+  }
+}
+
+onMounted(() => {
+  if (!hasSupabaseConfig) return
+
+  loadUnreadCount()
+  sidebarChannel = subscribeToCustomerMessages({
+    onInsert(message) {
+      if (message.sender_type === 'user') {
+        unreadCount.value += 1
+      }
+    },
+  })
+})
+
+onBeforeUnmount(() => {
+  unsubscribeChannel(sidebarChannel)
+})
 </script>
 
 <template>
@@ -70,6 +108,12 @@ const navigation = [
       >
         <component :is="item.icon" class="size-5" />
         <span>{{ item.label }}</span>
+        <span
+          v-if="item.to === '/admin/customer-service' && unreadCount > 0"
+          class="ml-auto rounded-full bg-red-600 px-2 py-0.5 text-[0.68rem] font-bold text-white"
+        >
+          {{ unreadCount }}
+        </span>
       </RouterLink>
     </nav>
 

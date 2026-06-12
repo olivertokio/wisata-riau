@@ -91,9 +91,13 @@ const routes = [
   },
   {
     path: '/admin/chat',
+    redirect: '/admin/customer-service',
+  },
+  {
+    path: '/admin/customer-service',
     name: 'admin-chat',
     component: () => import('../pages/admin/Chat.vue'),
-    meta: { layout: 'admin', requiresAdmin: true, title: 'Customer Service Chat' },
+    meta: { layout: 'admin', requiresAdmin: true, title: 'Customer Service' },
   },
   {
     path: '/admin/settings',
